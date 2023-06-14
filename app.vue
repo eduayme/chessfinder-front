@@ -114,7 +114,9 @@
             class="text-sm normal-case flex justify-start items-center gap-2"
           >
             <UIcon name="i-heroicons-clock" class="text-lg" />
-            {{ time_control_value }}
+            <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[40ch]">
+              {{ time_control_value }}
+            </span>
           </div>
         </div>
       </UCard>
