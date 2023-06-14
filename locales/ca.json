@@ -1,0 +1,20 @@
+{
+    "title": "Troba tots els tornejos a Europa",
+    "english": "Anglès",
+    "spanish": "Castellà",
+    "catalan": "Català",
+    "region": {
+        "esp": "Espanya",
+        "cat": "Catalunya"
+    },
+    "short": {
+        "year": "numeric", "month": "short", "weekday": "short", "day": "numeric"
+    },
+    "long": {
+        "year": "numeric", "month": "short", "day": "numeric",
+        "weekday": "short", "hour": "numeric", "minute": "numeric"
+    },
+    "tournament": "Torneig | Tornejos",
+    "search": "Cercar",
+    "in_progress": "En progrés"
+}

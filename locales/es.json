@@ -1,0 +1,20 @@
+{
+    "title": "Encuentra todos los torneos en Europa",
+    "english": "Inglés",
+    "spanish": "Español",
+    "catalan": "Catalán",
+    "region": {
+        "esp": "España",
+        "cat": "Cataluña"
+    },
+    "short": {
+        "year": "numeric", "month": "short", "weekday": "short", "day": "numeric"
+    },
+    "long": {
+        "year": "numeric", "month": "short", "day": "numeric",
+        "weekday": "short", "hour": "numeric", "minute": "numeric"
+    },
+    "tournament": "Torneo | Torneos",
+    "search": "Buscar",
+    "in_progress": "En progreso"
+}
