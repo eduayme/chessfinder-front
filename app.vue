@@ -1,5 +1,5 @@
 <template>
-  <UContainer class="py-4 flex flex-col gap-4">
+  <UContainer class="py-4 flex flex-col gap-4 mb-8">
     <Navbar />
     <UContainer class="flex mx-0 w-full gap-4">
       <UInput
@@ -148,7 +148,7 @@
         </div>
       </UCard>
     </UContainer>
-    <UContainer v-if="data?.total > 0" class="flex justify-center mt-4 mb-8">
+    <UContainer v-if="data?.total > displayPerPage" class="flex justify-center mt-4 mb-8">
       <UPagination v-model="page" :page-count="displayPerPage" :total="data?.total" />
     </UContainer>
   </UContainer>
