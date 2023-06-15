@@ -1,6 +1,6 @@
 <template>
   <UContainer class="py-4 flex flex-col gap-4">
-    <UContainer class="flex justify-between items-center mx-0 w-full">
+    <UContainer class="flex flex-col md:flex-row gap-2 justify-between items-start mx-0 w-full">
       <h1 class="text-xl">{{ $t('title') }}</h1>
       <div class="flex gap-2">
         <USelect
@@ -50,7 +50,7 @@
     <UContainer v-if="data?.total" class="flex mx-0 w-full">
       <UBadge size="sm">{{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}</UBadge>
     </UContainer>
-    <UContainer class="grid grid-cols-[repeat(auto-fit,minmax(420px,1fr))] mx-0 gap-4 w-full">
+    <UContainer class="grid grid-cols-[repeat(auto-fit,minmax(380px,1fr))] mx-0 gap-4 w-full">
       <UCard v-for="{
           name,
           fed,
@@ -62,10 +62,11 @@
           time_control_value
         } in data?.tournaments"
         :key="name+end"
+        class="overflow-auto"
       >
         <p class="text-base capitalize">{{ name }}</p>
-        <div class="flex justify-start mt-2 gap-2 text-gray-500 dark:text-gray-400">
-          <UIcon :name="getFlag(fed)" class="text-lg" />
+        <div class="flex justify-start items-center mt-2 gap-1 md:gap-2 text-gray-500 dark:text-gray-400">
+          <UIcon :name="getFlag(fed)" class="text-base mr-1" />
           <a
             v-if="city"
             class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[50ch]"
@@ -78,7 +79,7 @@
             {{ $t(`region.${fed.toLowerCase()}`) }}
           </p>
         </div>
-        <div class="flex justify-start mt-2 gap-2 text-gray-500 dark:text-gray-400">
+        <div class="flex justify-start mt-2 gap-1 md:gap-2 text-gray-500 dark:text-gray-400">
           <UIcon name="i-heroicons-calendar" class="text-lg" />
           <div class="text-sm normal-case">
             <div class="inline-block first-letter:capitalize">
@@ -93,14 +94,14 @@
             {{ $t('in_progress') }}
           </UBadge>
         </div>
-        <div class="flex justify-start items-center mt-2 gap-8 text-gray-500 dark:text-gray-400">
-          <div v-if="total_players" class="text-sm flex justify-start items-center gap-2">
+        <div class="flex justify-start items-center mt-2 gap-4 md:gap-8 text-gray-500 dark:text-gray-400">
+          <div v-if="total_players" class="text-sm flex justify-start items-center gap-1 md:gap-2">
             <UIcon name="i-heroicons-user-group" class="text-lg" />
             {{ total_players }}
           </div>
           <div
             v-if="time_control_type"
-            class="text-sm normal-case flex justify-start items-center gap-2"
+            class="text-sm normal-case flex justify-start items-center gap-1 md:gap-2"
           >
             <UIcon v-if="time_control_type === 'standard'" name="i-heroicons-puzzle-piece" class="text-lg" />
             <UIcon v-if="time_control_type === 'rapid'" name="i-heroicons-fire" class="text-lg" />
@@ -111,10 +112,10 @@
           </div>
           <div
             v-if="time_control_value"
-            class="text-sm normal-case flex justify-start items-center gap-2"
+            class="text-sm normal-case flex justify-start items-center gap-1 md:gap-2"
           >
             <UIcon name="i-heroicons-clock" class="text-lg" />
-            <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[40ch]">
+            <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[36ch]">
               {{ time_control_value }}
             </span>
           </div>

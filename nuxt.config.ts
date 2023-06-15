@@ -4,6 +4,12 @@ import VueI18nVitePlugin from "@intlify/unplugin-vue-i18n/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+    }
+  },
   modules: ["@nuxthq/ui"],
   ui: {
     icons: ["heroicons", "circle-flags"],
