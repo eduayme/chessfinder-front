@@ -88,9 +88,9 @@
               {{ total_players }}
             </div>
             <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
-              <UIcon v-if="time_control?.type === 'standard'" :name="getIcon(standard)" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon(rapid)" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon(blitz)" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
               <div class="inline-block first-letter:capitalize">
                 {{ time_control?.type }}
               </div>
