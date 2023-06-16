@@ -58,7 +58,7 @@
       >
         <p class="text-base capitalize">{{ name }}</p>
         <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
-        <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+        <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
           <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
           <a
             v-if="city"
@@ -165,6 +165,7 @@ const displayPerPage = ref(12)
 const startDate = ref(new Date())
 
 watch([page, search], () => {
+  page.value = 1
   refresh()
 })
 
@@ -183,7 +184,7 @@ const { pending, data, refresh } = await useFetch(`${runtimeConfig.public.API_BA
 })
 
 const getFlag = (country) => {
-  if (country === "ESP") {
+  if (country === "ESP" || country === "Spain") {
     return "i-circle-flags-es"
   } else if (country === "CAT") {
     return "i-circle-flags-es-ct"
