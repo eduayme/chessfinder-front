@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
     }
   },
-  modules: ["@nuxthq/ui"],
+  modules: ["@nuxthq/ui", "nuxt-gtag"],
   ui: {
     icons: ["heroicons", "circle-flags"],
   },
@@ -37,5 +37,5 @@ export default defineNuxtConfig({
         ],
       }),
     ],
-  },
+  }
 });
