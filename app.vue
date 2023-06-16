@@ -64,7 +64,7 @@
           <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
             <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
             <a v-if="city"
-              class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]"
+              class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
               :href="getCityLink(city)" target="_blank">
               {{ city.toLowerCase() }}
             </a>
