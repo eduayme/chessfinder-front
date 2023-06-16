@@ -150,7 +150,7 @@ const page = ref(1)
 const search = ref("")
 const displayPerPage = ref(12)
 const notStarted = ref(false)
-const minDate = ref(null)
+const minDate = ref("")
 const controlType = ref("")
 
 const getIcon = (name) => {
@@ -177,7 +177,7 @@ watch(notStarted, (newValue) => {
     const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000))
     minDate.value = tomorrow.toLocaleString().split(',')[0]
   } else {
-    minDate.value = null
+    minDate.value = ""
   }
   refresh()
 })
