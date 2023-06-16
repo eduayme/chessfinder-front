@@ -51,7 +51,8 @@
           time_control_value,
           link_info64,
           link_chessresults,
-          link_fide
+          link_fide,
+          website
         } in data?.tournaments"
         :key="name+end"
         class="overflow-auto group"
@@ -90,8 +91,8 @@
           </div>
         </div>
         <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
-          <div class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
-            <div v-if="total_players" class="flex justify-start gap-1 text-sm">
+          <div v-if="total_players > 0 || time_control_type" class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
+            <div v-if="total_players > 0" class="flex justify-start gap-1 text-sm">
               <UIcon name="i-heroicons-user-group" class="text-lg" />
               {{ total_players }}
             </div>
@@ -119,6 +120,16 @@
         </div>
         <div class="flex justify-start gap-4 mt-4 group">
           <UButton
+            v-if="website"
+            icon="i-heroicons-link"
+            color="gray"
+            class="md:invisible md:group-hover:visible"
+            :to="website"
+            target="_blank"
+          >
+            website
+          </UButton>
+          <UButton
             v-if="link_fide"
             icon="i-heroicons-link"
             color="gray"
@@ -139,7 +150,7 @@
             chess-results.com
           </UButton>
           <UButton
-          v-if="link_info64"
+            v-if="link_info64"
             icon="i-heroicons-link"
             color="gray"
             class="md:invisible md:group-hover:visible"
@@ -165,8 +176,11 @@ const displayPerPage = ref(12)
 const startDate = ref(new Date())
 
 watch([page, search], () => {
-  page.value = 1
   refresh()
+})
+
+watch(search, () => {
+  page.value = 1
 })
 
 const { pending, data, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/tournaments`, {
@@ -204,7 +218,7 @@ const getCityLink = (cityStr, fed) => {
     return city
   }
   const url = 'https://www.google.com/maps/search/'
-  const link = url + city.split("/").join("") + ', ' + fed
+  const link = url + city.split("/").join("")
   return link
 }
 
