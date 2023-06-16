@@ -17,5 +17,11 @@
     "tournament": "Torneig | Tornejos",
     "search": "Cercar",
     "in_progress": "En progrés",
-    "not_started": "No començat"
+    "not_started": "No començat",
+    "time_controls": {
+        "all_controls": "Tots els controls",
+        "standard": "Estàndard",
+        "rapid": "Ràpid",
+        "blitz": "Blitz"
+    }
 }

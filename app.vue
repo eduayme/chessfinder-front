@@ -1,6 +1,8 @@
 <template>
   <UContainer class="flex flex-col gap-4 py-4 mb-8">
+
     <Navbar />
+
     <UContainer class="flex flex-col w-full gap-4 mx-0 md:items-center md:flex-row">
       <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" size="md" color="white" :trailing="false"
         :placeholder="`${$t('search')}...`" :ui="{ icon: { trailing: { pointer: '' } } }" class="max-w-full w-60">
@@ -10,12 +12,30 @@
         </template>
       </UInput>
       <div class="flex gap-6 mx-0 md:items-center">
+        <USelect v-model="controlType" :options="[
+          {
+            name: $t('time_controls.all_controls'),
+            value: ''
+          },
+          {
+            name: $t('time_controls.standard'),
+            value: 'standard'
+          }, {
+            name: $t('time_controls.rapid'),
+            value: 'rapid'
+          }, {
+            name: $t('time_controls.blitz'),
+            value: 'blitz'
+          }
+        ]" option-attribute="name" :icon="getIcon(controlType)" />
         <UCheckbox v-model="notStarted" :label="$t('not_started')" name="notStarted" />
       </div>
     </UContainer>
+
     <UContainer v-if="data?.total" class="flex w-full">
       <UBadge size="sm">{{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}</UBadge>
     </UContainer>
+
     <UContainer class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <UCard v-for="{
         name,
@@ -68,9 +88,9 @@
               {{ total_players }}
             </div>
             <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
-              <UIcon v-if="time_control?.type === 'standard'" name="i-heroicons-puzzle-piece" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'rapid'" name="i-heroicons-fire" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'blitz'" name="i-heroicons-bolt" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'standard'" :name="getIcon(standard)" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon(rapid)" class="text-lg" />
+              <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon(blitz)" class="text-lg" />
               <div class="inline-block first-letter:capitalize">
                 {{ time_control?.type }}
               </div>
@@ -108,9 +128,11 @@
         </div>
       </UCard>
     </UContainer>
+
     <UContainer v-if="data?.total > displayPerPage" class="flex justify-center mt-4 mb-8">
       <UPagination v-model="page" :page-count="displayPerPage" :total="data?.total" />
     </UContainer>
+
   </UContainer>
 </template>
 
@@ -121,6 +143,18 @@ const search = ref("")
 const displayPerPage = ref(12)
 const notStarted = ref(false)
 const minDate = ref(null)
+const controlType = ref("")
+
+const getIcon = (name) => {
+  if (name === "standard") {
+    return "i-heroicons-puzzle-piece"
+  } else if (name === "rapid") {
+    return "i-heroicons-fire"
+  } else if (name === "blitz") {
+    return "i-heroicons-bolt"
+  }
+  return "i-heroicons-clock"
+}
 
 watch([page, search], () => {
   refresh()
@@ -141,9 +175,9 @@ watch(notStarted, (newValue) => {
 })
 
 const formatDate = (date) => {
-    var dateParts = date.split("/")
-    var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-    return dateObject
+  var dateParts = date.split("/")
+  var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+  return dateObject
 }
 
 const { data, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/tournaments`, {
@@ -157,7 +191,8 @@ const { data, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/t
     page: page,
     display_per_page: displayPerPage,
     search: search,
-    min_date: minDate
+    min_date: minDate,
+    time_control_type: controlType
   }
 })
 
@@ -185,4 +220,12 @@ const getCityLink = (cityStr) => {
   const link = url + city.split("/").join("")
   return link
 }
+
+useHead({
+  title: "ChessFinder",
+  meta: [{
+    name: 'description',
+    content: "Find all chess tournaments in seconds"
+  }]
+})
 </script>

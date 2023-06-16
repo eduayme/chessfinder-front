@@ -17,5 +17,11 @@
     "tournament": "Tournament | Tournaments",
     "search": "Search",
     "in_progress": "In progress",
-    "not_started": "Not started"
+    "not_started": "Not started",
+    "time_controls": {
+        "all_controls": "All controls",
+        "standard": "Standard",
+        "rapid": "Rapid",
+        "blitz": "Blitz"
+    }
 }
