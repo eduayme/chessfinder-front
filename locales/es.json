@@ -16,5 +16,6 @@
     },
     "tournament": "Torneo | Torneos",
     "search": "Buscar",
-    "in_progress": "En progreso"
+    "in_progress": "En progreso",
+    "not_started": "No empezado"
 }

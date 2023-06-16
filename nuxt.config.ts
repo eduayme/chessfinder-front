@@ -14,6 +14,14 @@ export default defineNuxtConfig({
   ui: {
     icons: ["heroicons", "circle-flags"],
   },
+  i18n: {
+    // ...
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
+    }
+  },
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_URL,

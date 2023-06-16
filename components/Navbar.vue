@@ -1,6 +1,6 @@
 <template>
-    <UContainer class="flex flex-col md:flex-row gap-2 justify-between items-start mx-0 w-full">
-        <h1 class="text-xl">{{ $t('title') }}</h1>
+    <UContainer class="flex flex-col items-start justify-between w-full gap-2 mx-0 md:flex-row">
+        <h1 class="text-2xl font-semibold">ChessFinder</h1>
         <div class="flex gap-2">
             <USelect v-model="$i18n.locale" :options="[
                 {

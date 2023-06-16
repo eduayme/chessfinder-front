@@ -16,5 +16,6 @@
     },
     "tournament": "Tournament | Tournaments",
     "search": "Search",
-    "in_progress": "In progress"
+    "in_progress": "In progress",
+    "not_started": "Not started"
 }
