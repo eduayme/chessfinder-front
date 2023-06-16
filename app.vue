@@ -1,7 +1,7 @@
 <template>
-  <UContainer class="py-4 flex flex-col gap-4 mb-8">
+  <UContainer class="flex flex-col gap-4 py-4 mb-8">
     <Navbar />
-    <UContainer class="flex mx-0 w-full gap-4">
+    <UContainer class="flex w-full gap-4 mx-0">
       <UInput
         v-model="search"
         icon="i-heroicons-magnifying-glass-20-solid"
@@ -10,7 +10,7 @@
         :trailing="false"
         :placeholder="`${$t('search')}...`"
         :ui="{ icon: { trailing: { pointer: '' } } }"
-        class="w-60 max-w-full"
+        class="max-w-full w-60"
       >
         <template #trailing>
           <UButton
@@ -39,7 +39,7 @@
     <UContainer v-if="data?.total" class="flex w-full">
       <UBadge size="sm">{{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}</UBadge>
     </UContainer>
-    <UContainer class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
+    <UContainer class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
       <UCard v-for="{
           name,
           fed,
@@ -57,7 +57,8 @@
         class="overflow-auto group"
       >
         <p class="text-base capitalize">{{ name }}</p>
-        <div class="flex justify-start mt-2 gap-1 text-gray-500 dark:text-gray-400">
+        <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
+        <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
           <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
           <a
             v-if="city"
@@ -70,11 +71,13 @@
           <p v-else class="text-sm capitalize">
             {{ $t(`region.${fed.toLowerCase()}`) }}
           </p>
+        </div>
           <UBadge v-if="formatDate(start) < new Date()" color="sky" size="xs" class="md:ml-2">
             {{ $t('in_progress') }}
           </UBadge>
-        </div>
-        <div class="flex justify-start mt-2 gap-1 text-gray-500 dark:text-gray-400">
+
+      </div>
+        <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
           <UIcon name="i-heroicons-calendar" class="text-lg" />
           <div class="text-sm normal-case">
             <div class="inline-block first-letter:capitalize">
@@ -86,15 +89,15 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col md:flex-row justify-start mt-2 gap-2 md:gap-4 text-gray-500 dark:text-gray-400">
-          <div class="flex justify-end md:justify-start gap-4 flex-row-reverse md:flex-row">
-            <div v-if="total_players" class="text-sm flex justify-start gap-1">
+        <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
+          <div class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
+            <div v-if="total_players" class="flex justify-start gap-1 text-sm">
               <UIcon name="i-heroicons-user-group" class="text-lg" />
               {{ total_players }}
             </div>
             <div
               v-if="time_control_type"
-              class="text-sm normal-case flex justify-start items-start gap-1"
+              class="flex items-start justify-start gap-1 text-sm normal-case"
             >
               <UIcon v-if="time_control_type === 'standard'" name="i-heroicons-puzzle-piece" class="text-lg" />
               <UIcon v-if="time_control_type === 'rapid'" name="i-heroicons-fire" class="text-lg" />
@@ -106,7 +109,7 @@
           </div>
           <div
             v-if="time_control_value"
-            class="text-sm normal-case flex justify-start items-start gap-1"
+            class="flex items-start justify-start gap-1 text-sm normal-case"
           >
             <UIcon name="i-heroicons-clock" class="text-lg" />
             <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
@@ -114,7 +117,7 @@
             </span>
           </div>
         </div>
-        <div class="flex justify-start mt-4 gap-4 group">
+        <div class="flex justify-start gap-4 mt-4 group">
           <UButton
             v-if="link_fide"
             icon="i-heroicons-link"
