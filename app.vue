@@ -4,14 +4,22 @@
     <Navbar />
 
     <UContainer class="flex flex-col w-full gap-4 mx-0 md:items-center md:flex-row">
-      <UInput v-model="search" icon="i-heroicons-magnifying-glass-20-solid" size="md" color="white" :trailing="false"
-        :placeholder="`${$t('search')}...`" :ui="{ icon: { trailing: { pointer: '' } } }" class="max-w-full w-60">
-        <template #trailing>
-          <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid" :padded="false"
-            @click="search = ''" />
-        </template>
-      </UInput>
-      <div class="flex gap-6 mx-0 md:items-center">
+      <div class="w-full sm:w-80">
+        <UInput
+          v-model="search"
+          icon="i-heroicons-magnifying-glass-20-solid"
+          color="white" :trailing="false"
+          :placeholder="`${$t('search')}...`"
+          :ui="{ icon: { trailing: { pointer: '' } } }"
+          class="max-w-full"
+        >
+          <template #trailing>
+            <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid" :padded="false"
+              @click="search = ''" />
+          </template>
+        </UInput>
+      </div>
+      <div class="flex items-center gap-6 mx-0">
         <USelect v-model="controlType" :options="[
           {
             name: $t('time_controls.all_controls'),

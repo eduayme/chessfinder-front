@@ -1,5 +1,5 @@
 <template>
-    <UContainer class="flex flex-col items-start justify-between w-full gap-2 mx-0 md:flex-row">
+    <UContainer class="flex items-start justify-between w-full gap-2 mx-0">
         <h1 class="text-2xl font-semibold">ChessFinder</h1>
         <div class="flex gap-2">
             <USelect v-model="$i18n.locale" :options="[
@@ -13,7 +13,8 @@
                     name: $t('catalan'),
                     value: 'ca'
                 }
-            ]" option-attribute="name" icon="i-heroicons-globe-alt" />
+            ]" option-attribute="name" icon="i-heroicons-globe-alt"
+            />
             <UButton :icon="isDark ? 'i-heroicons-moon' : 'i-heroicons-sun'" color="gray" variant="ghost" aria-label="Theme"
                 @click="isDark = !isDark" />
         </div>
