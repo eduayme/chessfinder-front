@@ -58,7 +58,7 @@
         link_fide,
         website
       } in data?.tournaments" :key="name + end"
-        class="group md:hover:dark:ring-gray-600 md:hover:ring-gray-300 hover:shadow-md">
+        class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
         <p class="text-base capitalize">{{ name }}</p>
         <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
           <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
