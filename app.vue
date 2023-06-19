@@ -14,28 +14,56 @@
           class="max-w-full"
         >
           <template #trailing>
-            <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid" :padded="false"
-              @click="search = ''" />
+            <UButton
+              v-show="search !== ''"
+              color="gray"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              :padded="false"
+              @click="search = ''"
+            />
           </template>
         </UInput>
       </div>
       <div class="flex items-center gap-6 mx-0">
-        <USelect v-model="controlType" :options="[
-          {
-            name: $t('time_controls.all_controls'),
-            value: ''
-          },
-          {
-            name: $t('time_controls.standard'),
-            value: 'standard'
-          }, {
-            name: $t('time_controls.rapid'),
-            value: 'rapid'
-          }, {
-            name: $t('time_controls.blitz'),
-            value: 'blitz'
-          }
-        ]" option-attribute="name" :icon="getIcon(controlType)" />
+        <USelect
+          v-model="filterControl"
+          :options="[
+            {
+              name: $t('time_controls.all_controls'),
+              value: ''
+            },
+            {
+              name: $t('time_controls.standard'),
+              value: 'standard'
+            }, {
+              name: $t('time_controls.rapid'),
+              value: 'rapid'
+            }, {
+              name: $t('time_controls.blitz'),
+              value: 'blitz'
+            }
+          ]"
+          option-attribute="name"
+          :icon="getIcon(filterControl)"
+        />
+        <USelect
+          v-model="filterFederation"
+          :options="[
+            {
+              name: $t('regions.all_regions'),
+              value: ''
+            },
+            ...data?.regions?.map(region => {
+              return {
+                'name': $t(`regions.${region.toLowerCase()}`),
+                'value': region
+              }
+            })
+          ]"
+          option-attribute="name"
+          :icon="getFlag(filterFederation)"
+        />
         <UCheckbox v-model="notStarted" :label="$t('not_started')" name="notStarted" />
       </div>
     </UContainer>
@@ -62,14 +90,16 @@
         <p class="text-base capitalize">{{ name }}</p>
         <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
           <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
-            <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
+            <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
+              <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
+            </UTooltip>
             <a v-if="city"
               class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
               :href="getCityLink(city)" target="_blank">
               {{ city.toLowerCase() }}
             </a>
             <p v-else class="text-sm capitalize">
-              {{ $t(`region.${fed.toLowerCase()}`) }}
+              {{ $t(`regions.${fed.toLowerCase()}`) }}
             </p>
           </div>
           <UBadge v-if="formatDate(start) < new Date()" color="sky" size="xs" class="md:ml-2">
@@ -151,7 +181,8 @@ const search = ref("")
 const displayPerPage = ref(12)
 const notStarted = ref(false)
 const minDate = ref(null)
-const controlType = ref("")
+const filterControl = ref("")
+const filterFederation = ref("")
 
 const getIcon = (name) => {
   if (name === "standard") {
@@ -161,14 +192,14 @@ const getIcon = (name) => {
   } else if (name === "blitz") {
     return "i-heroicons-bolt"
   }
-  return "i-heroicons-clock"
+  return ""
 }
 
-watch([page, search], () => {
+watch([page, search, filterFederation], () => {
   refresh()
 })
 
-watch([search, notStarted], () => {
+watch([search, notStarted, filterFederation], () => {
   page.value = 1
 })
 
@@ -200,17 +231,66 @@ const { data, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/t
     display_per_page: displayPerPage,
     search: search,
     min_date: minDate,
-    time_control_type: controlType
+    time_control_type: filterControl,
+    region: filterFederation
   }
 })
 
 const getFlag = (country) => {
-  if (country === "ESP" || country === "Spain") {
-    return "i-circle-flags-es"
-  } else if (country === "CAT") {
-    return "i-circle-flags-es-ct"
-  }
-}
+  const countryCode = country.toUpperCase()
+  if (countryCode === "ALB") return "i-circle-flags-al";
+  if (countryCode === "AND") return "i-circle-flags-ad";
+  if (countryCode === "ARM") return "i-circle-flags-am";
+  if (countryCode === "AUT") return "i-circle-flags-at";
+  if (countryCode === "AZE") return "i-circle-flags-az";
+  if (countryCode === "BLR") return "i-circle-flags-by";
+  if (countryCode === "BEL") return "i-circle-flags-be";
+  if (countryCode === "BIH") return "i-circle-flags-ba";
+  if (countryCode === "BUL") return "i-circle-flags-bg";
+  if (countryCode === "CAT") return "i-circle-flags-es-ct";
+  if (countryCode === "CRO") return "i-circle-flags-hr";
+  if (countryCode === "CYP") return "i-circle-flags-cy";
+  if (countryCode === "CZE") return "i-circle-flags-cz";
+  if (countryCode === "DEN") return "i-circle-flags-dk";
+  if (countryCode === "EST") return "i-circle-flags-ee";
+  if (countryCode === "ESP") return "i-circle-flags-es";
+  if (countryCode === "FIN") return "i-circle-flags-fi";
+  if (countryCode === "FRA") return "i-circle-flags-fr";
+  if (countryCode === "GEO") return "i-circle-flags-ge";
+  if (countryCode === "GER") return "i-circle-flags-de";
+  if (countryCode === "GRE") return "i-circle-flags-gr";
+  if (countryCode === "HUN") return "i-circle-flags-hu";
+  if (countryCode === "ISL") return "i-circle-flags-is";
+  if (countryCode === "IRL") return "i-circle-flags-ie";
+  if (countryCode === "ITA") return "i-circle-flags-it";
+  if (countryCode === "KAZ") return "i-circle-flags-kz";
+  if (countryCode === "KOS") return "i-circle-flags-xk";
+  if (countryCode === "LAT") return "i-circle-flags-lv";
+  if (countryCode === "LIE") return "i-circle-flags-li";
+  if (countryCode === "LTU") return "i-circle-flags-lt";
+  if (countryCode === "LUX") return "i-circle-flags-lu";
+  if (countryCode === "MLT") return "i-circle-flags-mt";
+  if (countryCode === "MDA") return "i-circle-flags-md";
+  if (countryCode === "MNC") return "i-circle-flags-mc";
+  if (countryCode === "MNE") return "i-circle-flags-me";
+  if (countryCode === "NED") return "i-circle-flags-nl";
+  if (countryCode === "MKD") return "i-circle-flags-mk";
+  if (countryCode === "NOR") return "i-circle-flags-no";
+  if (countryCode === "POL") return "i-circle-flags-pl";
+  if (countryCode === "POR") return "i-circle-flags-pt";
+  if (countryCode === "ROU") return "i-circle-flags-ro";
+  if (countryCode === "RUS") return "i-circle-flags-ru";
+  if (countryCode === "SMR") return "i-circle-flags-sm";
+  if (countryCode === "SRB") return "i-circle-flags-rs";
+  if (countryCode === "SVK") return "i-circle-flags-sk";
+  if (countryCode === "SVN") return "i-circle-flags-si";
+  if (countryCode === "SWE") return "i-circle-flags-se";
+  if (countryCode === "SUI") return "i-circle-flags-ch";
+  if (countryCode === "TUR") return "i-circle-flags-tr";
+  if (countryCode === "UKR") return "i-circle-flags-ua";
+  if (countryCode === "ENG") return "i-circle-flags-gb";
+  return ""; // if code not found
+};
 
 const getCityLink = (cityStr) => {
   const city = cityStr.toLowerCase()
