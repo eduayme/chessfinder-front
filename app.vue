@@ -25,7 +25,7 @@
           </template>
         </UInput>
       </div>
-      <div class="flex items-center gap-6 mx-0">
+      <div class="flex flex-wrap items-center gap-6 mx-0">
         <USelect
           v-model="filterControl"
           :options="[
@@ -81,9 +81,8 @@
         end,
         total_players,
         time_control,
-        link_info64,
-        link_chessresults,
-        link_fide,
+        ranking,
+        info,
         website
       } in data?.tournaments" :key="name + end"
         class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
@@ -147,21 +146,35 @@
           </div>
         </div>
         <div class="flex justify-start gap-4 mt-4 group">
-          <UButton v-if="website" icon="i-heroicons-link" color="gray" class="md:invisible md:group-hover:visible"
-            :to="website" target="_blank">
-            website
+          <UButton
+            v-if="website"
+            color="gray"
+            class="md:invisible md:group-hover:visible"
+            :to="website"
+            target="_blank"
+          >
+            <UIcon name="i-heroicons-link" class="text-lg" />
+            {{ $t("website") }}
           </UButton>
-          <UButton v-if="link_fide" icon="i-heroicons-link" color="gray" class="md:invisible md:group-hover:visible"
-            :to="link_fide" target="_blank">
-            fide.com
+          <UButton
+            v-if="ranking"
+            color="gray"
+            class="md:invisible md:group-hover:visible"
+            :to="ranking"
+            target="_blank"
+          >
+            <UIcon name="i-heroicons-user-group" class="text-lg" />
+            {{ $t("ranking") }}
           </UButton>
-          <UButton v-if="link_chessresults" icon="i-heroicons-link" color="gray"
-            class="md:invisible md:group-hover:visible" :to="link_chessresults" target="_blank">
-            chess-results.com
-          </UButton>
-          <UButton v-if="link_info64" icon="i-heroicons-link" color="gray" class="md:invisible md:group-hover:visible"
-            :to="link_info64" target="_blank">
-            info64.org
+          <UButton
+            v-if="info"
+            color="gray"
+            class="md:invisible md:group-hover:visible"
+            :to="info"
+            target="_blank"
+          >
+            <UIcon name="i-heroicons-information-circle" class="text-lg" />
+            {{ $t("info") }}
           </UButton>
         </div>
       </UCard>

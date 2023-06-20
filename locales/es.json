@@ -21,6 +21,9 @@
   "search": "Buscar",
   "in_progress": "En progreso",
   "not_started": "No empezado",
+  "website": "Página web",
+  "ranking": "Lista inicial",
+  "info": "Información",
   "time_controls": {
     "all_controls": "Todos los controles",
     "standard": "Estándard",

@@ -21,6 +21,9 @@
   "search": "Cercar",
   "in_progress": "En progrés",
   "not_started": "No començat",
+  "website": "Pàgina web",
+  "ranking": "Llista inicial",
+  "info": "Informació",
   "time_controls": {
     "all_controls": "Tots els controls",
     "standard": "Estàndard",
