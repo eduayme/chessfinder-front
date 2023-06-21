@@ -22,8 +22,9 @@
   "in_progress": "En progreso",
   "not_started": "No empezado",
   "website": "Página web",
-  "ranking": "Lista inicial",
+  "ranking": "Ranking",
   "info": "Información",
+  "no_tournaments": "No se han encontrado torneos",
   "time_controls": {
     "all_controls": "Todos los controles",
     "standard": "Estándard",

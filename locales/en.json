@@ -22,8 +22,9 @@
   "in_progress": "In progress",
   "not_started": "Not started",
   "website": "Website",
-  "ranking": "Initial ranking",
+  "ranking": "Ranking",
   "info": "Information",
+  "no_tournaments": "No tournaments found",
   "time_controls": {
     "all_controls": "All controls",
     "standard": "Standard",

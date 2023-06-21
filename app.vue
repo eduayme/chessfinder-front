@@ -3,7 +3,7 @@
 
     <Navbar />
 
-    <UContainer class="flex flex-col w-full gap-4 mx-0 md:items-center md:flex-row">
+    <UContainer class="flex flex-col w-full mx-0 gap-x-6 gap-y-4 md:items-center md:flex-row">
       <div class="w-full sm:w-80">
         <UInput
           v-model="search"
@@ -25,159 +25,177 @@
           </template>
         </UInput>
       </div>
-      <div class="flex flex-wrap items-center gap-6 mx-0">
-        <USelect
-          v-model="filterControl"
-          :options="[
-            {
-              name: $t('time_controls.all_controls'),
-              value: ''
-            },
-            {
-              name: $t('time_controls.standard'),
-              value: 'standard'
-            }, {
-              name: $t('time_controls.rapid'),
-              value: 'rapid'
-            }, {
-              name: $t('time_controls.blitz'),
-              value: 'blitz'
-            }
-          ]"
-          option-attribute="name"
-          :icon="getIcon(filterControl)"
-        />
-        <USelect
-          v-model="filterFederation"
-          :options="[
-            {
-              name: $t('regions.all_regions'),
-              value: ''
-            },
-            ...data?.regions?.map(region => {
-              return {
-                'name': $t(`regions.${region.toLowerCase()}`),
-                'value': region
+      <div class="flex flex-wrap items-center mx-0 gap-x-6 gap-y-2">
+          <USelect
+            v-model="filterControl"
+            :options="[
+              {
+                name: $t('time_controls.all_controls'),
+                value: ''
+              },
+              {
+                name: $t('time_controls.standard'),
+                value: 'standard'
+              }, {
+                name: $t('time_controls.rapid'),
+                value: 'rapid'
+              }, {
+                name: $t('time_controls.blitz'),
+                value: 'blitz'
               }
-            })
-          ]"
-          option-attribute="name"
-          :icon="getFlag(filterFederation)"
-        />
-        <UCheckbox v-model="notStarted" :label="$t('not_started')" name="notStarted" />
+            ]"
+            option-attribute="name"
+            :icon="getIcon(filterControl)"
+          />
+          <USelect
+            v-model="filterFederation"
+            :options="[
+              {
+                name: $t('regions.all_regions'),
+                value: ''
+              },
+              ...data?.regions?.map(region => {
+                return {
+                  'name': $t(`regions.${region.toLowerCase()}`),
+                  'value': region
+                }
+              })
+            ]"
+            option-attribute="name"
+            :icon="getFlag(filterFederation)"
+          />
+          <UCheckbox v-model="notStarted" :label="$t('not_started')" name="notStarted" />
       </div>
     </UContainer>
 
-    <UContainer v-if="data?.total" class="flex w-full">
+    <UContainer v-if="data?.total > 0" class="flex w-full">
       <UBadge size="sm">{{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}</UBadge>
     </UContainer>
 
+    <div class="p-10 text-center" v-else>
+      <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
+      <h3>{{ $t('no_tournaments') }}</h3>
+    </div>
+
     <UContainer class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-      <UCard v-for="{
-        name,
-        fed,
-        city,
-        start,
-        end,
-        total_players,
-        time_control,
-        ranking,
-        info,
-        website
-      } in data?.tournaments" :key="name + end"
-        class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
-        <p class="text-base capitalize">{{ name }}</p>
-        <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
-          <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
-            <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
-              <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
-            </UTooltip>
-            <a v-if="city"
-              class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
-              :href="getCityLink(city)" target="_blank">
-              {{ city.toLowerCase() }}
-            </a>
-            <p v-else class="text-sm capitalize">
-              {{ $t(`regions.${fed.toLowerCase()}`) }}
-            </p>
+      <template v-if="pending">
+        <UCard v-for="n in 9" :key="n" class="h-54">
+          <div class="flex flex-col gap-2">
+            <USkeleton class="w-full h-6" />
+            <USkeleton class="h-5 w-[200px]" />
+            <USkeleton class="h-5 w-[280px]" />
+            <USkeleton class="h-5 w-[200px]" />
+            <USkeleton class="h-8 w-[120px] mt-2" />
           </div>
-          <UBadge v-if="formatDate(start) < new Date()" color="sky" size="xs" class="md:ml-2">
-            {{ $t('in_progress') }}
-          </UBadge>
-        </div>
-        <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
-          <UIcon name="i-heroicons-calendar" class="text-lg" />
-          <div class="text-sm normal-case">
-            <div class="inline-block first-letter:capitalize">
-              {{ $d(formatDate(start), 'short') }}
+        </UCard>
+      </template>
+      <template v-else>
+        <UCard v-for="{
+          name,
+          fed,
+          city,
+          start,
+          end,
+          total_players,
+          time_control,
+          ranking,
+          info,
+          website
+        } in data?.tournaments" :key="name + end"
+          class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
+          <p class="text-base capitalize">{{ name }}</p>
+          <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
+            <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+              <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
+                <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
+              </UTooltip>
+              <a v-if="city"
+                class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
+                :href="getCityLink(city)" target="_blank">
+                {{ city.toLowerCase() }}
+              </a>
+              <p v-else class="text-sm capitalize">
+                {{ $t(`regions.${fed.toLowerCase()}`) }}
+              </p>
             </div>
-            <span v-if="start != end"> - </span>
-            <div v-if="start != end" class="inline-block first-letter:capitalize">
-              {{ $d(formatDate(end), 'short') }}
-            </div>
+            <UBadge v-if="formatDate(start) < new Date()" color="sky" size="xs" class="md:ml-2">
+              {{ $t('in_progress') }}
+            </UBadge>
           </div>
-        </div>
-        <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
-          <div v-if="total_players > 0 || time_control?.type"
-            class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
-            <div v-if="total_players > 0" class="flex justify-start gap-1 text-sm">
-              <UIcon name="i-heroicons-user-group" class="text-lg" />
-              {{ total_players }}
-            </div>
-            <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
-              <UIcon v-if="time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
-              <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
+          <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+            <UIcon name="i-heroicons-calendar" class="text-lg" />
+            <div class="text-sm normal-case">
               <div class="inline-block first-letter:capitalize">
-                {{ time_control?.type }}
+                {{ $d(formatDate(start), 'short') }}
+              </div>
+              <span v-if="start != end"> - </span>
+              <div v-if="start != end" class="inline-block first-letter:capitalize">
+                {{ $d(formatDate(end), 'short') }}
               </div>
             </div>
           </div>
-          <div v-if="time_control?.value" class="flex items-start justify-start gap-1 text-sm normal-case">
-            <UIcon name="i-heroicons-clock" class="text-lg" />
-            <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
-              <template v-if="time_control?.min > 0">
-                {{ `${time_control?.min}m + ${time_control?.sec}s` }}
-              </template>
-              <template v-else>
-                {{ time_control?.value }}
-              </template>
-            </span>
+          <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
+            <div v-if="total_players > 0 || time_control?.type"
+              class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
+              <div v-if="total_players > 0" class="flex justify-start gap-1 text-sm">
+                <UIcon name="i-heroicons-user-group" class="text-lg" />
+                {{ total_players }}
+              </div>
+              <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
+                <UIcon v-if="time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
+                <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
+                <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
+                <div class="inline-block first-letter:capitalize">
+                  {{ time_control?.type }}
+                </div>
+              </div>
+            </div>
+            <div v-if="time_control?.value" class="flex items-start justify-start gap-1 text-sm normal-case">
+              <UIcon name="i-heroicons-clock" class="text-lg" />
+              <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
+                <template v-if="time_control?.min > 0">
+                  {{ `${time_control?.min}m + ${time_control?.sec}s` }}
+                </template>
+                <template v-else>
+                  {{ time_control?.value }}
+                </template>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="flex justify-start gap-4 mt-4 group">
-          <UButton
-            v-if="website"
-            color="gray"
-            class="md:invisible md:group-hover:visible"
-            :to="website"
-            target="_blank"
-          >
-            <UIcon name="i-heroicons-link" class="text-lg" />
-            {{ $t("website") }}
-          </UButton>
-          <UButton
-            v-if="ranking"
-            color="gray"
-            class="md:invisible md:group-hover:visible"
-            :to="ranking"
-            target="_blank"
-          >
-            <UIcon name="i-heroicons-user-group" class="text-lg" />
-            {{ $t("ranking") }}
-          </UButton>
-          <UButton
-            v-if="info"
-            color="gray"
-            class="md:invisible md:group-hover:visible"
-            :to="info"
-            target="_blank"
-          >
-            <UIcon name="i-heroicons-information-circle" class="text-lg" />
-            {{ $t("info") }}
-          </UButton>
-        </div>
-      </UCard>
+          <div class="flex flex-wrap justify-start mt-4 gap-x-4 gap-y-2 group">
+            <UButton
+              v-if="website"
+              color="gray"
+              class="md:invisible md:group-hover:visible"
+              :to="website"
+              target="_blank"
+            >
+              <UIcon name="i-heroicons-link" class="text-lg" />
+              {{ $t("website") }}
+            </UButton>
+            <UButton
+              v-if="ranking"
+              color="gray"
+              class="md:invisible md:group-hover:visible"
+              :to="ranking"
+              target="_blank"
+            >
+              <UIcon name="i-heroicons-user-group" class="text-lg" />
+              {{ $t("ranking") }}
+            </UButton>
+            <UButton
+              v-if="info"
+              color="gray"
+              class="md:invisible md:group-hover:visible"
+              :to="info"
+              target="_blank"
+            >
+              <UIcon name="i-heroicons-information-circle" class="text-lg" />
+              {{ $t("info") }}
+            </UButton>
+          </div>
+        </UCard>
+      </template>
     </UContainer>
 
     <UContainer v-if="data?.total > displayPerPage" class="flex justify-center mt-4 mb-8">
@@ -208,11 +226,12 @@ const getIcon = (name) => {
   return ""
 }
 
-watch([page, search, filterFederation], () => {
+watch(page, () => {
   refresh()
 })
 
-watch([search, notStarted, filterFederation], () => {
+watch([search, notStarted, filterControl, filterFederation], () => {
+  refresh()
   page.value = 1
 })
 
@@ -232,7 +251,7 @@ const formatDate = (date) => {
   return dateObject
 }
 
-const { data, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/tournaments`, {
+const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/tournaments`, {
   lazy: true,
   mode: 'cors',
   headers: {
