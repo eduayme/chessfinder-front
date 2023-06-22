@@ -26,8 +26,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_URL,
-      posthogPublicKey: 'phc_u5d313g4BNHKKC0cxsWNepdD24UVLH7Nj6UzCWYqoeS',
-      posthogHost: 'https://app.posthog.com'
+      posthogPublicKey: process.env.POSTHOG_KEY,
+      posthogHost: process.env.POSTHOG_HOST
     },
   },
   plugins: ["~/plugins/posthog.client.js", "~/plugins/i18n.ts"],

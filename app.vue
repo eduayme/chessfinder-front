@@ -207,9 +207,9 @@
 
 <script setup>
 const { $posthog } = useNuxtApp()
-if ($posthog) {
-  const posthog = $posthog()
-  posthog?.capture('start')
+if ($posthog && !window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+    const posthog = $posthog()
+    posthog?.capture('start')
 }
 
 const runtimeConfig = useRuntimeConfig()
