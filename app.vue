@@ -206,12 +206,6 @@
 </template>
 
 <script setup>
-const { $posthog } = useNuxtApp()
-if ($posthog && !window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
-    const posthog = $posthog()
-    posthog?.capture('start')
-}
-
 const runtimeConfig = useRuntimeConfig()
 const page = ref(1)
 const search = ref("")
@@ -257,7 +251,7 @@ const formatDate = (date) => {
   return dateObject
 }
 
-const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.API_BASE_URL}/tournaments`, {
+const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl}/tournaments`, {
   lazy: true,
   mode: 'cors',
   headers: {
