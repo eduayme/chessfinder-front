@@ -206,6 +206,12 @@
 </template>
 
 <script setup>
+const { $posthog } = useNuxtApp()
+if ($posthog) {
+  const posthog = $posthog()
+  posthog?.capture('start')
+}
+
 const runtimeConfig = useRuntimeConfig()
 const page = ref(1)
 const search = ref("")

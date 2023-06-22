@@ -26,9 +26,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_URL,
+      posthogPublicKey: 'phc_u5d313g4BNHKKC0cxsWNepdD24UVLH7Nj6UzCWYqoeS',
+      posthogHost: 'https://app.posthog.com'
     },
   },
-  plugins: ["~/plugins/i18n.ts"],
+  plugins: ["~/plugins/i18n.ts", "~/plugins/posthog.client.js"],
   vite: {
     plugins: [
       VueI18nVitePlugin({
