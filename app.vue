@@ -169,10 +169,10 @@
               class="md:invisible md:group-hover:visible"
               :to="website"
               target="_blank"
-              @click="posthog.capture('click-website', {
+              @click="clickCapture('click-website', {
                 name: name,
                 website: website
-              });"
+              })"
             >
               <UIcon name="i-heroicons-link" class="text-lg" />
               {{ $t("website") }}
@@ -183,10 +183,10 @@
               class="md:invisible md:group-hover:visible"
               :to="ranking"
               target="_blank"
-              @click="posthog.capture('click-ranking', {
+              @click="clickCapture('click-ranking', {
                 name: name,
                 ranking: ranking
-              });"
+              })"
             >
               <UIcon name="i-heroicons-user-group" class="text-lg" />
               {{ $t("ranking") }}
@@ -197,10 +197,10 @@
               class="md:invisible md:group-hover:visible"
               :to="info"
               target="_blank"
-              @click="posthog.capture('click-info', {
+              @click="clickCapture('click-info', {
                 name: name,
                 info: info
-              });"
+              })"
             >
               <UIcon name="i-heroicons-information-circle" class="text-lg" />
               {{ $t("info") }}
@@ -286,6 +286,10 @@ watch(notStarted, (newValue) => {
     minDate: minDate.value
   });
 })
+
+const clickCapture = (name, obj) => {
+  posthog.capture(name, obj);
+}
 
 const formatDate = (date) => {
   var dateParts = date.split("/")
