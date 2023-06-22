@@ -30,7 +30,7 @@ export default defineNuxtConfig({
       posthogHost: process.env.POSTHOG_HOST
     },
   },
-  plugins: ["~/plugins/posthog.client.js", "~/plugins/i18n.ts"],
+  plugins: ["~/plugins/i18n.ts"],
   vite: {
     plugins: [
       VueI18nVitePlugin({
