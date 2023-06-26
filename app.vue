@@ -250,24 +250,24 @@ watch(page, () => {
 })
 
 watch(search, (newValue) => {
-  refresh()
   page.value = 1
+  refresh()
   posthog.capture('filter-search', {
     search: newValue
   });
 })
 
 watch(filterControl, (newValue) => {
-  refresh()
   page.value = 1
+  refresh()
   posthog.capture('filter-control', {
     timeControl: newValue
   });
 })
 
 watch(filterFederation, (newValue) => {
-  refresh()
   page.value = 1
+  refresh()
   posthog.capture('filter-federation', {
     federation: newValue
   });
@@ -280,8 +280,8 @@ watch(notStarted, (newValue) => {
   } else {
     minDate.value = null
   }
-  refresh()
   page.value = 1
+  refresh()
   posthog.capture('filter-notStarted', {
     minDate: minDate.value
   });
