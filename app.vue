@@ -227,8 +227,12 @@ const minDate = ref(null)
 const filterControl = ref("")
 const filterFederation = ref("")
 
+const isLocalDev = computed(() => {
+  return window.location.host.includes('127.0.0.1') || window.location.host.includes('localhost')
+})
+
 onMounted(() => {
-  if (!window.location.host.includes('127.0.0.1') && !window.location.host.includes('localhost')) {
+  if (!isLocalDev) {
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
     posthog.init('phc_u5d313g4BNHKKC0cxsWNepdD24UVLH7Nj6UzCWYqoeS',{api_host:'https://eu.posthog.com'})
   }
@@ -252,25 +256,34 @@ watch(page, () => {
 watch(search, (newValue) => {
   page.value = 1
   refresh()
-  posthog.capture('filter-search', {
-    search: newValue
-  });
+
+  if (!isLocalDev) {
+    posthog.capture('filter-search', {
+      search: newValue
+    });
+  }
 })
 
 watch(filterControl, (newValue) => {
   page.value = 1
   refresh()
-  posthog.capture('filter-control', {
-    timeControl: newValue
-  });
+
+  if (!isLocalDev) {
+    posthog.capture('filter-control', {
+      timeControl: newValue
+    });
+  }
 })
 
 watch(filterFederation, (newValue) => {
   page.value = 1
   refresh()
-  posthog.capture('filter-federation', {
-    federation: newValue
-  });
+
+  if (!isLocalDev) {
+    posthog.capture('filter-federation', {
+      federation: newValue
+    });
+  }
 })
 
 watch(notStarted, (newValue) => {
@@ -282,13 +295,18 @@ watch(notStarted, (newValue) => {
   }
   page.value = 1
   refresh()
-  posthog.capture('filter-notStarted', {
-    minDate: minDate.value
-  });
+
+  if (!isLocalDev) {
+    posthog.capture('filter-notStarted', {
+      minDate: minDate.value
+    });
+  }
 })
 
 const clickCapture = (name, obj) => {
-  posthog.capture(name, obj);
+  if (!isLocalDev) {
+    posthog.capture(name, obj);
+  }
 }
 
 const formatDate = (date) => {
