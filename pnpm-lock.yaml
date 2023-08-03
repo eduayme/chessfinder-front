@@ -8,9 +8,6 @@ dependencies:
   '@popperjs/core':
     specifier: ^2.11.8
     version: 2.11.8
-  posthog-js:
-    specifier: ^1.68.3
-    version: 1.68.3
   v-calendar:
     specifier: ^3.0.3
     version: 3.0.3(@popperjs/core@2.11.8)(vue@3.3.4)
@@ -31,9 +28,6 @@ devDependencies:
   nuxt:
     specifier: ^3.5.3
     version: 3.5.3(@types/node@18.0.0)
-  nuxt-gtag:
-    specifier: ^0.5.7
-    version: 0.5.7
   vue-i18n:
     specifier: ^9.2.2
     version: 9.2.2(vue@3.3.4)
@@ -2999,10 +2993,6 @@ packages:
       web-streams-polyfill: 3.2.1
     dev: true
 
-  /fflate@0.4.8:
-    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
-    dev: false
-
   /figures@5.0.0:
     resolution: {integrity: sha512-ej8ksPF4x6e5wvK9yevct0UCXh8TTFlWGVLlgjZuoBH1HwjIfKE/IdL5mq89sFA7zELi1VhKpmtDnrs7zWyeyg==}
     engines: {node: '>=14'}
@@ -4357,17 +4347,6 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /nuxt-gtag@0.5.7:
-    resolution: {integrity: sha512-Q6NRndEJ0phEfKdS4uLy3hpVBkgWGnG5KJ2dhVyCmbLXcfakkmf19f2WJ5uM2yUOg8rAkYgDjRb9XyAfE+okuA==}
-    dependencies:
-      '@nuxt/kit': 3.5.3
-      defu: 6.1.2
-      pathe: 1.1.1
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
-    dev: true
-
   /nuxt@3.5.3(@types/node@18.0.0):
     resolution: {integrity: sha512-fG39BZ5N5ATtmx2vuxN8APQPSlSsCDpfkJ0k581gMc7eFztqrBzPncZX5w3RQLW7AiGBE2yYEfqiwC6AVODBBg==}
     engines: {node: ^14.18.0 || >=16.10.0}
@@ -5199,12 +5178,6 @@ packages:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
-
-  /posthog-js@1.68.3:
-    resolution: {integrity: sha512-bgDwVJDQdEwjptaf4L8obmjt3JQ4kZfqCYll009Q1pI06hPd0M4R50sphjWXRm9VG4EhpGFDjb+GccRw2yVreA==}
-    dependencies:
-      fflate: 0.4.8
-    dev: false
 
   /prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
     }
   },
-  modules: ["@nuxthq/ui", "nuxt-gtag"],
+  modules: ["@nuxthq/ui"],
   ui: {
     icons: ["heroicons", "circle-flags"],
   },
@@ -30,7 +30,7 @@ export default defineNuxtConfig({
       posthogHost: process.env.POSTHOG_HOST
     },
   },
-  plugins: ["~/plugins/i18n.ts"],
+  plugins: ['~/plugins/vercel.ts', '~/plugins/i18n.ts'],
   vite: {
     plugins: [
       VueI18nVitePlugin({
