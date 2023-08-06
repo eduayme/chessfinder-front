@@ -1,8 +1,6 @@
 <template>
   <UContainer class="flex flex-col gap-4 py-4 mb-8">
-
     <Navbar />
-
     <UContainer class="flex flex-col w-full mx-0 gap-x-6 gap-y-4 md:items-center md:flex-row">
       <div class="w-full sm:w-80">
         <UInput
@@ -68,8 +66,7 @@
           <UCheckbox v-model="notStarted" :label="$t('not_started')" name="notStarted" />
       </div>
     </UContainer>
-
-    <UContainer v-if="data?.total > 0" class="flex w-full">
+    <UContainer v-if="data?.total > 0" class="flex items-center justify-between w-full">
       <UBadge
         size="sm"
         color="black"
@@ -77,14 +74,31 @@
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
       </UBadge>
+      <UTooltip :text="$t(`feature_soon`)" :popper="{ placement: 'top' }">
+        <UButtonGroup size="xs" class="hidden md:block">
+          <UButton
+            v-for="{ label, icon } in views"
+            :key="label"
+            :label="$t(label)"
+            :icon="icon"
+            :color="view === label ? 'primary' : 'white'"
+            :variant="view === label ? 'outline' : 'link'"
+            variant="outline"
+            @click="view = label"
+            disabled
+          />
+        </UButtonGroup>
+      </UTooltip>
     </UContainer>
-
     <div class="p-10 text-center" v-else>
       <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
       <h3>{{ $t('no_tournaments') }}</h3>
     </div>
 
-    <UContainer class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+    <UContainer
+      v-if="view === 'cards'"
+      class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3"
+    >
       <UCard v-for="{
           name,
           fed,
@@ -216,12 +230,18 @@
 const runtimeConfig = useRuntimeConfig()
 const page = ref(1)
 const search = ref("")
-const displayPerPage = ref(12)
+const displayPerPage = ref(15)
 const notStarted = ref(false)
 const minDate = ref(null)
 const filterControl = ref("")
 const filterFederation = ref("")
 const tournaments = ref([])
+const view = ref("cards")
+const views = ref([
+  { label: 'cards', icon: 'i-heroicons-squares-2x2' },
+  { label: 'list', icon: 'i-heroicons-queue-list' },
+  { label: 'map', icon: 'i-heroicons-map' }
+])
 
 const getIcon = (name) => {
   if (name === "standard") {

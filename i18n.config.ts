@@ -91,6 +91,10 @@ export default defineI18nConfig(() => ({
                 ukr: "Ukraine",
                 eng: "United Kingdom",
             },
+            cards: "Cards",
+            list: "List",
+            map: "Map",
+            feature_soon: "Feature coming soon"
         },
         es: {
             title: "Encuentra torneos por toda Europa",
@@ -179,6 +183,10 @@ export default defineI18nConfig(() => ({
                 ukr: "Ucrania",
                 eng: "Reino Unido",
             },
+            cards: "Tarjetas",
+            list: "Lista",
+            map: "Mapa",
+            feature_soon: "Funcionalidad próximamente disponible"
         },
         ca: {
             title: "Troba tots els tornejos a Europa",
@@ -267,6 +275,10 @@ export default defineI18nConfig(() => ({
                 ukr: "Ucraïna",
                 eng: "Regne Unit",
             },
+            cards: "Targetes",
+            list: "Llista",
+            map: "Mapa",
+            feature_soon: "Funcionalitat pròximamente disponible"
         },
     },
     datetimeFormats: {
