@@ -9,12 +9,11 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@iconify-json/circle-flags": "^1.1.40",
-    "@intlify/unplugin-vue-i18n": "^0.11.0",
-    "@nuxthq/ui": "^2.4.0",
+    "@iconify-json/circle-flags": "^1.1.41",
+    "@nuxthq/ui": "^2.7.0",
+    "@nuxtjs/i18n": "8.0.0-rc.2",
     "@types/node": "^18",
-    "nuxt": "^3.5.3",
-    "vue-i18n": "^9.2.2"
+    "nuxt": "^3.6.5"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",

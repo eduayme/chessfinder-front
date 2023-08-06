@@ -48,6 +48,7 @@
             :icon="getIcon(filterControl)"
           />
           <USelect
+            v-if="data?.regions"
             v-model="filterFederation"
             :options="[
               {
@@ -56,7 +57,7 @@
               },
               ...data?.regions?.map(region => {
                 return {
-                  'name': $t(`regions.${region.toLowerCase()}`),
+                  'name': $t(`regions.${region?.toLowerCase()}`),
                   'value': region
                 }
               })
@@ -69,7 +70,13 @@
     </UContainer>
 
     <UContainer v-if="data?.total > 0" class="flex w-full">
-      <UBadge size="sm">{{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}</UBadge>
+      <UBadge
+        size="sm"
+        color="black"
+        variant="solid"
+      >
+        {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
+      </UBadge>
     </UContainer>
 
     <div class="p-10 text-center" v-else>
@@ -78,19 +85,7 @@
     </div>
 
     <UContainer class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-      <template v-if="pending">
-        <UCard v-for="n in 9" :key="n" class="h-54">
-          <div class="flex flex-col gap-2">
-            <USkeleton class="w-full h-6" />
-            <USkeleton class="h-5 w-[200px]" />
-            <USkeleton class="h-5 w-[280px]" />
-            <USkeleton class="h-5 w-[200px]" />
-            <USkeleton class="h-8 w-[120px] mt-2" />
-          </div>
-        </UCard>
-      </template>
-      <template v-else>
-        <UCard v-for="{
+      <UCard v-for="{
           name,
           fed,
           city,
@@ -101,7 +96,7 @@
           ranking,
           info,
           website
-        } in data?.tournaments" :key="name + end"
+        } in tournaments" :key="name + end"
           class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
           <p class="text-base capitalize">{{ name }}</p>
           <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
@@ -118,7 +113,13 @@
                 {{ $t(`regions.${fed.toLowerCase()}`) }}
               </p>
             </div>
-            <UBadge v-if="formatDate(start) < new Date()" color="sky" size="xs" class="md:ml-2">
+            <UBadge
+              v-if="formatDate(start) < new Date()"
+              size="xs"
+              color="sky"
+              variant="outline"
+              class="md:ml-2"
+            >
               {{ $t('in_progress') }}
             </UBadge>
           </div>
@@ -194,12 +195,18 @@
               {{ $t("info") }}
             </UButton>
           </div>
+      </UCard>
+      <template v-if="pending">
+        <UCard v-for="n in 9" :key="n" class="h-54">
+          <div class="flex flex-col gap-2">
+            <USkeleton class="w-full h-6" />
+            <USkeleton class="h-5 w-[200px]" />
+            <USkeleton class="h-5 w-[280px]" />
+            <USkeleton class="h-5 w-[200px]" />
+            <USkeleton class="h-8 w-[120px] mt-2" />
+          </div>
         </UCard>
       </template>
-    </UContainer>
-
-    <UContainer v-if="data?.total > displayPerPage" class="flex justify-center mt-4 mb-8">
-      <UPagination v-model="page" :page-count="displayPerPage" :total="data?.total" />
     </UContainer>
 
   </UContainer>
@@ -214,6 +221,7 @@ const notStarted = ref(false)
 const minDate = ref(null)
 const filterControl = ref("")
 const filterFederation = ref("")
+const tournaments = ref([])
 
 const getIcon = (name) => {
   if (name === "standard") {
@@ -226,21 +234,27 @@ const getIcon = (name) => {
   return ""
 }
 
-watch(page, () => {
+onMounted(() => {
+  onScroll();
   refresh()
 })
 
-watch(search, () => {
-  page.value = 1
-  refresh()
-})
+const onScroll = () => {
+  window.onscroll = () => {
+    let bottomOfWindow = Math.max(
+      window.pageYOffset,
+      document.documentElement.scrollTop,
+      document.body.scrollTop
+    ) + window.innerHeight === document.documentElement.offsetHeight
 
-watch(filterControl, () => {
-  page.value = 1
-  refresh()
-})
+    if (bottomOfWindow) {
+      page.value++
+    }
+  }
+}
 
-watch(filterFederation, () => {
+watch([search, filterControl, filterFederation], () => {
+  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -252,6 +266,7 @@ watch(notStarted, (newValue) => {
   } else {
     minDate.value = null
   }
+  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -277,6 +292,10 @@ const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl
     time_control_type: filterControl,
     region: filterFederation
   }
+})
+
+watch (data, (newValue) => {
+  tournaments.value =[...tournaments.value, ...newValue?.tournaments]
 })
 
 const getFlag = (country) => {
@@ -326,7 +345,7 @@ const getFlag = (country) => {
   if (countryCode === "SMR") return "i-circle-flags-sm";
   if (countryCode === "SRB") return "i-circle-flags-rs";
   if (countryCode === "SVK") return "i-circle-flags-sk";
-  if (countryCode === "SVN") return "i-circle-flags-si";
+  if (countryCode === "SLO") return "i-circle-flags-si";
   if (countryCode === "SWE") return "i-circle-flags-se";
   if (countryCode === "SUI") return "i-circle-flags-ch";
   if (countryCode === "TUR") return "i-circle-flags-tr";
@@ -355,7 +374,7 @@ const getCityLink = (cityStr) => {
 useHead({
   title: "ChessFinder",
   meta: [{
-    name: 'description',
+    name: 'ChessFinder',
     content: "Find all chess tournaments in seconds"
   }]
 })
