@@ -74,21 +74,26 @@
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
       </UBadge>
-      <UTooltip :text="$t(`feature_soon`)" :popper="{ placement: 'top' }">
-        <UButtonGroup size="xs" class="hidden md:block">
-          <UButton
-            v-for="{ label, icon } in views"
-            :key="label"
-            :label="$t(label)"
-            :icon="icon"
-            :color="view === label ? 'primary' : 'white'"
-            :variant="view === label ? 'outline' : 'link'"
-            variant="outline"
-            @click="view = label"
-            disabled
-          />
-        </UButtonGroup>
-      </UTooltip>
+      <UButtonGroup size="xs" class="hidden md:block">
+        <UButton
+          v-for="{ label, icon } in views"
+          :key="label"
+          :color="view === label ? 'primary' : 'white'"
+          :variant="view === label ? 'outline' : 'link'"
+          variant="outline"
+          @click="view = label"
+          :disabled="label === 'map'"
+        >
+          <UTooltip v-if="label === 'map'" :text="$t('feature_soon')" :popper="{ placement: 'top' }">
+            <UIcon :name="icon" class="text-base" />
+            {{ $t(label) }}
+          </UTooltip>
+          <template v-else>
+            <UIcon :name="icon" class="text-base" />
+            {{ $t(label) }}
+          </template>
+        </UButton>
+      </UButtonGroup>
     </UContainer>
     <div class="p-10 text-center" v-else>
       <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
@@ -118,14 +123,12 @@
               <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
                 <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
               </UTooltip>
-              <a v-if="city"
+              <a
                 class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
-                :href="getCityLink(city)" target="_blank">
-                {{ city.toLowerCase() }}
+                :href="getCityLink(city)" target="_blank"
+              >
+                {{ city.toLowerCase() || $t(`regions.${fed.toLowerCase()}`) }}
               </a>
-              <p v-else class="text-sm capitalize">
-                {{ $t(`regions.${fed.toLowerCase()}`) }}
-              </p>
             </div>
             <UBadge
               v-if="formatDate(start) < new Date()"
@@ -222,12 +225,106 @@
         </UCard>
       </template>
     </UContainer>
-
+    <UContainer v-if="view === 'list'">
+      <UTable
+        :rows="tournaments"
+        :columns="tableColumns"
+      >
+        <template #name-data="{ row }">
+          <div class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[48ch]">
+            {{ row.name }}
+          </div>
+        </template>
+        <template #time_control-data="{ row }">
+          <div class="flex items-start justify-start gap-1 text-sm normal-case">
+            <UIcon
+              v-if="row.time_control?.type === 'standard'"
+              :name="getIcon('standard')"
+              class="text-lg"
+            />
+            <UIcon
+              v-if="row.time_control?.type === 'rapid'"
+              :name="getIcon('rapid')"
+              class="text-lg"
+            />
+            <UIcon
+              v-if="row.time_control?.type === 'blitz'"
+              :name="getIcon('blitz')"
+              class="text-lg"
+            />
+            <div v-if="row.time_control?.min > 0" class="inline-block first-letter:capitalize">
+              {{ row.time_control?.type }}
+              · <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
+                <template v-if="row.time_control?.min > 0">
+                  {{ `${row.time_control?.min}m + ${row.time_control?.sec}s` }}
+                </template>
+                <template v-else>
+                  {{ row.time_control?.value }}
+                </template>
+              </span>
+            </div>
+          </div>
+        </template>
+        <template #city-data="{ row }">
+          <div class="flex items-center gap-[6px]">
+            <UTooltip :text="$t(`regions.${row.fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
+              <UIcon :name="getFlag(row.fed)" class="text-base mr-[1px]" />
+            </UTooltip>
+            <a
+              class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[28ch]"
+              :href="getCityLink(row.city)" target="_blank"
+            >
+              {{ row.city.toLowerCase() || $t(`regions.${row.fed.toLowerCase()}`) }}
+            </a>
+          </div>
+        </template>
+        <template #actions-data="{ row }">
+          <div class="flex flex-wrap justify-start gap-x-4 gap-y-2">
+            <UButton
+              v-if="row.website"
+              color="gray"
+              :to="row.website"
+              target="_blank"
+              size="xs"
+            >
+              <UIcon name="i-heroicons-link" class="text-lg" />
+              {{ $t("website") }}
+            </UButton>
+            <UButton
+              v-if="row.ranking"
+              color="gray"
+              :to="row.ranking"
+              target="_blank"
+              size="xs"
+            >
+              <UIcon name="i-heroicons-user-group" class="text-lg" />
+              {{ $t("ranking") }}
+            </UButton>
+            <UButton
+              v-if="row.info"
+              color="gray"
+              :to="row.info"
+              target="_blank"
+              size="xs"
+            >
+              <UIcon name="i-heroicons-information-circle" class="text-lg" />
+              {{ $t("info") }}
+            </UButton>
+          </div>
+        </template>
+      </UTable>
+      <template v-if="pending">
+        <div class="flex flex-col gap-4">
+          <USkeleton v-for="n in 9" :key="n" class="w-full h-12" />
+        </div>
+      </template>
+    </UContainer>
   </UContainer>
 </template>
 
 <script setup>
 const runtimeConfig = useRuntimeConfig()
+const { t } = useI18n()
 const page = ref(1)
 const search = ref("")
 const displayPerPage = ref(15)
@@ -242,6 +339,17 @@ const views = ref([
   { label: 'list', icon: 'i-heroicons-queue-list' },
   { label: 'map', icon: 'i-heroicons-map' }
 ])
+
+const tableColumns = computed(() => {
+  return [
+    { key: 'name', label: t('name') },
+    { key: 'start', label: t('start') },
+    { key: 'end', label: t('end') },
+    { key: 'time_control', label: t('time_control') },
+    { key: 'city', label: t('city') },
+    { key: 'actions' }
+  ] || []
+})
 
 const getIcon = (name) => {
   if (name === "standard") {

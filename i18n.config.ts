@@ -94,7 +94,12 @@ export default defineI18nConfig(() => ({
             cards: "Cards",
             list: "List",
             map: "Map",
-            feature_soon: "Feature coming soon"
+            feature_soon: "Feature coming soon",
+            name: "Name",
+            start: "Start",
+            end: "End",
+            time_control: "Time control",
+            city: "City"
         },
         es: {
             title: "Encuentra torneos por toda Europa",
@@ -186,7 +191,12 @@ export default defineI18nConfig(() => ({
             cards: "Tarjetas",
             list: "Lista",
             map: "Mapa",
-            feature_soon: "Funcionalidad próximamente disponible"
+            feature_soon: "Funcionalidad próximamente disponible",
+            name: "Nombre",
+            start: "Inicio",
+            end: "Fin",
+            time_control: "Ritmo de juego",
+            city: "Ciudad"
         },
         ca: {
             title: "Troba tots els tornejos a Europa",
@@ -278,7 +288,12 @@ export default defineI18nConfig(() => ({
             cards: "Targetes",
             list: "Llista",
             map: "Mapa",
-            feature_soon: "Funcionalitat pròximamente disponible"
+            feature_soon: "Funcionalitat pròximamente disponible",
+            name: "Nom",
+            start: "Inici",
+            end: "Fi",
+            time_control: "Ritme de joc",
+            city: "Ciutat"
         },
     },
     datetimeFormats: {
