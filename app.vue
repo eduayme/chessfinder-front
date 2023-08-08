@@ -95,7 +95,7 @@
     </UContainer>
 
     <template v-if="data?.total > 0 || pending">
-      <UContainer v-if="view === 'cards'">
+      <UContainer v-show="view === 'cards'">
         <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <UCard
             v-for="{
@@ -222,7 +222,7 @@
           </template>
         </div>
       </UContainer>
-      <UContainer v-if="view === 'list'">
+      <UContainer v-show="view === 'list'">
         <UTable
           :rows="tournaments"
           :columns="tableColumns"
@@ -357,19 +357,37 @@
           </UCard>
         </template>
       </UContainer>
-      <UContainer v-if="view === 'map'">
+      <UContainer v-show="view === 'map'">
         <div class="relative w-full h-[calc(100dvh-180px)] -mb-12">
           <MapboxMap
             map-id="map"
             style="position: relative; width: 100%; height: 100%"
             :options="{
               style: mapTheme, // style URL
-              center: [-68.137343, 45.137451], // starting position
-              zoom: 5 // starting zoom
+              center: [15, 50], // starting position
+              zoom: 3 // starting zoom
             }"
           >
+            <MapboxGeolocateControl position="top-left" />
             <MapboxFullscreenControl position="top-right" />
             <MapboxNavigationControl position="bottom-right" />
+            <MapboxDefaultMarker
+              v-for="n in 10"
+              :key="n"
+              :marker-id="`marker-${n}`"
+              :options="{}"
+              :lnglat="[20 + 1*n, 40]"
+            >
+              <MapboxDefaultPopup
+                :popup-id="`popup-${n}`"
+                :lnglat="[20 + 1*n, 40]"
+                :options="{
+                  closeOnClick: false
+                }"
+              >
+                {{ n }}
+              </MapboxDefaultPopup>
+            </MapboxDefaultMarker>
           </MapboxMap>
         </div>
       </UContainer>
@@ -409,9 +427,9 @@ const tableColumns = computed(() => {
 
 const mapTheme = computed(() => {
   if (colorMode.value === 'dark') {
-    return 'mapbox://styles/mapbox/dark-v11'
+    return 'mapbox://styles/mapbox/dark-v11?optimize=true'
   }
-  return 'mapbox://styles/mapbox/light-v11'
+  return 'mapbox://styles/mapbox/light-v11?optimize=true'
 })
 
 const getIcon = (name) => {
@@ -575,10 +593,19 @@ useHead({
 </script>
 
 <style>
-.mapboxgl-control-container {
-  display: none
-}
 canvas {
   border-radius: 6px;
+}
+.mapboxgl-popup-close-button {
+  top: 2px;
+  right: 2px;
+  height: 16px;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mapboxgl-popup-content {
+  padding: 20px;
 }
 </style>
