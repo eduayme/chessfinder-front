@@ -419,7 +419,6 @@ const onScroll = () => {
 }
 
 watch([search, filterControl, filterFederation], () => {
-  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -431,7 +430,6 @@ watch(notStarted, (newValue) => {
   } else {
     minDate.value = null
   }
-  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -460,6 +458,9 @@ const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl
 })
 
 watch (data, (newValue) => {
+  if (page.value === 1) {
+    tournaments.value = []
+  }
   tournaments.value = [...tournaments.value, ...newValue?.tournaments]
 })
 
