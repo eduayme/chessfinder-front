@@ -230,6 +230,7 @@
         <UTable
           :rows="tournaments"
           :columns="tableColumns"
+          :empty-state="null"
           :ui='{
               "tr": {
                 "base": "group"
