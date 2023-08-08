@@ -97,7 +97,8 @@
     <template v-if="data?.total > 0 || pending">
       <UContainer v-if="view === 'cards'">
         <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <UCard v-for="{
+          <UCard
+            v-for="{
               name,
               fed,
               city,
@@ -108,8 +109,10 @@
               ranking,
               info,
               website
-            } in tournaments" :key="name + end"
-              class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
+            } in tournaments"
+            :key="name + end"
+            class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md"
+          >
               <p class="text-base capitalize">{{ name }}</p>
               <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
                 <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
@@ -207,7 +210,7 @@
               </div>
           </UCard>
           <template v-if="pending">
-            <UCard v-for="n in 9" :key="n" class="h-54">
+            <UCard v-for="n in 10" :key="n" class="h-54">
               <div class="flex flex-col gap-2">
                 <USkeleton class="w-full h-6" />
                 <USkeleton class="h-5 w-[200px]" />
@@ -444,7 +447,6 @@ const onScroll = () => {
 }
 
 watch([search, filterControl, filterFederation], () => {
-  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -456,7 +458,6 @@ watch(notStarted, (newValue) => {
   } else {
     minDate.value = null
   }
-  tournaments.value = []
   page.value = 1
   refresh()
 })
@@ -485,6 +486,9 @@ const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl
 })
 
 watch (data, (newValue) => {
+  if (page.value === 1) {
+    tournaments.value = []
+  }
   tournaments.value = [...tournaments.value, ...newValue?.tournaments]
 })
 
