@@ -70,7 +70,7 @@
     <UContainer v-if="data?.total > 0" class="flex items-center justify-between w-full">
       <UBadge
         size="sm"
-        color="black"
+        color="white"
         variant="solid"
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
@@ -83,16 +83,9 @@
           :variant="view === label ? 'outline' : 'link'"
           variant="outline"
           @click="view = label"
-          :disabled="label === 'map'"
         >
-          <UTooltip v-if="label === 'map'" :text="$t('feature_soon')" :popper="{ placement: 'top' }">
-            <UIcon :name="icon" class="text-base" />
-            {{ $t(label) }}
-          </UTooltip>
-          <template v-else>
-            <UIcon :name="icon" class="text-base" />
-            {{ $t(label) }}
-          </template>
+          <UIcon :name="icon" class="text-base" />
+          {{ $t(label) }}
         </UButton>
       </UButtonGroup>
     </UContainer>
@@ -102,130 +95,6 @@
     </UContainer>
 
     <template v-if="data?.total > 0 || pending">
-      <UContainer v-if="view === 'cards'">
-        <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <UCard v-for="{
-              name,
-              fed,
-              city,
-              start,
-              end,
-              total_players,
-              time_control,
-              ranking,
-              info,
-              website
-            } in tournaments" :key="name + end"
-              class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
-              <p class="text-base capitalize">{{ name }}</p>
-              <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
-                <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
-                  <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
-                    <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
-                  </UTooltip>
-                  <a
-                    class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
-                    :href="getCityLink(city)" target="_blank"
-                  >
-                    {{ city.toLowerCase() || $t(`regions.${fed.toLowerCase()}`) }}
-                  </a>
-                </div>
-                <UBadge
-                  v-if="formatDate(start) < new Date()"
-                  size="xs"
-                  color="sky"
-                  variant="outline"
-                  class="md:ml-2"
-                >
-                  {{ $t('in_progress') }}
-                </UBadge>
-              </div>
-              <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
-                <UIcon name="i-heroicons-calendar" class="text-lg" />
-                <div class="text-sm normal-case">
-                  <div class="inline-block first-letter:capitalize">
-                    {{ $d(formatDate(start), 'short') }}
-                  </div>
-                  <span v-if="start != end"> - </span>
-                  <div v-if="start != end" class="inline-block first-letter:capitalize">
-                    {{ $d(formatDate(end), 'short') }}
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
-                <div v-if="total_players > 0 || time_control?.type"
-                  class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
-                  <div v-if="total_players > 0" class="flex justify-start gap-1 text-sm">
-                    <UIcon name="i-heroicons-user-group" class="text-lg" />
-                    {{ total_players }}
-                  </div>
-                  <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
-                    <UIcon v-if="time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
-                    <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
-                    <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
-                    <div class="inline-block first-letter:capitalize">
-                      {{ time_control?.type }}
-                    </div>
-                  </div>
-                </div>
-                <div v-if="time_control?.value" class="flex items-start justify-start gap-1 text-sm normal-case">
-                  <UIcon name="i-heroicons-clock" class="text-lg" />
-                  <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
-                    <template v-if="time_control?.min > 0">
-                      {{ `${time_control?.min}m + ${time_control?.sec}s` }}
-                    </template>
-                    <template v-else>
-                      {{ time_control?.value }}
-                    </template>
-                  </span>
-                </div>
-              </div>
-              <div class="flex flex-wrap justify-start mt-4 gap-x-4 gap-y-2 group">
-                <UButton
-                  v-if="website"
-                  color="gray"
-                  class="md:invisible md:group-hover:visible"
-                  :to="website"
-                  target="_blank"
-                >
-                  <UIcon name="i-heroicons-link" class="text-lg" />
-                  {{ $t("website") }}
-                </UButton>
-                <UButton
-                  v-if="ranking"
-                  color="gray"
-                  class="md:invisible md:group-hover:visible"
-                  :to="ranking"
-                  target="_blank"
-                >
-                  <UIcon name="i-heroicons-user-group" class="text-lg" />
-                  {{ $t("ranking") }}
-                </UButton>
-                <UButton
-                  v-if="info"
-                  color="gray"
-                  class="md:invisible md:group-hover:visible"
-                  :to="info"
-                  target="_blank"
-                >
-                  <UIcon name="i-heroicons-information-circle" class="text-lg" />
-                  {{ $t("info") }}
-                </UButton>
-              </div>
-          </UCard>
-          <template v-if="pending">
-            <UCard v-for="n in 9" :key="n" class="h-54">
-              <div class="flex flex-col gap-2">
-                <USkeleton class="w-full h-6" />
-                <USkeleton class="h-5 w-[200px]" />
-                <USkeleton class="h-5 w-[280px]" />
-                <USkeleton class="h-5 w-[200px]" />
-                <USkeleton class="h-8 w-[120px] mt-2" />
-              </div>
-            </UCard>
-          </template>
-        </div>
-      </UContainer>
       <UContainer v-if="view === 'list'">
         <UTable
           :rows="tournaments"
@@ -252,7 +121,7 @@
                 v-if="formatDate(row.start) < new Date()"
                 size="xs"
                 color="sky"
-                variant="outline"
+                variant="subtle"
                 class="md:ml-2"
               >
                 {{ $t('in_progress') }}
@@ -353,6 +222,130 @@
           </div>
         </template>
       </UContainer>
+      <UContainer v-if="view === 'cards'">
+        <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          <UCard v-for="{
+              name,
+              fed,
+              city,
+              start,
+              end,
+              total_players,
+              time_control,
+              ranking,
+              info,
+              website
+            } in tournaments" :key="name + end"
+              class="group md:hover:dark:ring-gray-500 md:hover:ring-gray-400 hover:shadow-md">
+              <p class="text-base capitalize">{{ name }}</p>
+              <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
+                <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+                  <UTooltip :text="$t(`regions.${fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
+                    <UIcon :name="getFlag(fed)" class="text-base mr-[1px]" />
+                  </UTooltip>
+                  <a
+                    class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
+                    :href="getCityLink(city)" target="_blank"
+                  >
+                    {{ city.toLowerCase() || $t(`regions.${fed.toLowerCase()}`) }}
+                  </a>
+                </div>
+                <UBadge
+                  v-if="formatDate(start) < new Date()"
+                  size="xs"
+                  color="sky"
+                  variant="subtle"
+                  class="md:ml-2"
+                >
+                  {{ $t('in_progress') }}
+                </UBadge>
+              </div>
+              <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+                <UIcon name="i-heroicons-calendar" class="text-lg" />
+                <div class="text-sm normal-case">
+                  <div class="inline-block first-letter:capitalize">
+                    {{ $d(formatDate(start), 'short') }}
+                  </div>
+                  <span v-if="start != end"> - </span>
+                  <div v-if="start != end" class="inline-block first-letter:capitalize">
+                    {{ $d(formatDate(end), 'short') }}
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
+                <div v-if="total_players > 0 || time_control?.type"
+                  class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
+                  <div v-if="total_players > 0" class="flex justify-start gap-1 text-sm">
+                    <UIcon name="i-heroicons-user-group" class="text-lg" />
+                    {{ total_players }}
+                  </div>
+                  <div v-if="time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
+                    <UIcon v-if="time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
+                    <UIcon v-if="time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
+                    <UIcon v-if="time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
+                    <div class="inline-block first-letter:capitalize">
+                      {{ time_control?.type }}
+                    </div>
+                  </div>
+                </div>
+                <div v-if="time_control?.value" class="flex items-start justify-start gap-1 text-sm normal-case">
+                  <UIcon name="i-heroicons-clock" class="text-lg" />
+                  <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
+                    <template v-if="time_control?.min > 0">
+                      {{ `${time_control?.min}m + ${time_control?.sec}s` }}
+                    </template>
+                    <template v-else>
+                      {{ time_control?.value }}
+                    </template>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-wrap justify-start mt-4 gap-x-4 gap-y-2 group">
+                <UButton
+                  v-if="website"
+                  color="gray"
+                  class="md:invisible md:group-hover:visible"
+                  :to="website"
+                  target="_blank"
+                >
+                  <UIcon name="i-heroicons-link" class="text-lg" />
+                  {{ $t("website") }}
+                </UButton>
+                <UButton
+                  v-if="ranking"
+                  color="gray"
+                  class="md:invisible md:group-hover:visible"
+                  :to="ranking"
+                  target="_blank"
+                >
+                  <UIcon name="i-heroicons-user-group" class="text-lg" />
+                  {{ $t("ranking") }}
+                </UButton>
+                <UButton
+                  v-if="info"
+                  color="gray"
+                  class="md:invisible md:group-hover:visible"
+                  :to="info"
+                  target="_blank"
+                >
+                  <UIcon name="i-heroicons-information-circle" class="text-lg" />
+                  {{ $t("info") }}
+                </UButton>
+              </div>
+          </UCard>
+          <template v-if="pending">
+            <UCard v-for="n in 9" :key="n" class="h-54">
+              <div class="flex flex-col gap-2">
+                <USkeleton class="w-full h-6" />
+                <USkeleton class="h-5 w-[200px]" />
+                <USkeleton class="h-5 w-[280px]" />
+                <USkeleton class="h-5 w-[200px]" />
+                <USkeleton class="h-8 w-[120px] mt-2" />
+              </div>
+            </UCard>
+          </template>
+        </div>
+      </UContainer>
     </template>
   </UContainer>
 </template>
@@ -364,15 +357,14 @@ const page = ref(1)
 const search = ref("")
 const displayPerPage = ref(15)
 const notStarted = ref(true)
-const minDate = ref(null)
+const minDate = ref(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)).toLocaleString().split(',')[0])
 const filterControl = ref("")
 const filterFederation = ref("")
 const tournaments = ref([])
-const view = ref("cards")
+const view = ref("list")
 const views = ref([
-  { label: 'cards', icon: 'i-heroicons-squares-2x2' },
   { label: 'list', icon: 'i-heroicons-queue-list' },
-  { label: 'map', icon: 'i-heroicons-map' }
+  { label: 'cards', icon: 'i-heroicons-squares-2x2' }
 ])
 
 const tableColumns = computed(() => {
@@ -425,8 +417,8 @@ watch([search, filterControl, filterFederation], () => {
 
 watch(notStarted, (newValue) => {
   if (newValue) {
-    const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000))
-    minDate.value = tomorrow.toLocaleString().split(',')[0]
+    const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000)).toLocaleString().split(',')[0]
+    minDate.value = tomorrow
   } else {
     minDate.value = null
   }
