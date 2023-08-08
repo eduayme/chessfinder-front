@@ -101,7 +101,7 @@
       <h3>{{ $t('no_tournaments') }}</h3>
     </UContainer>
 
-    <template v-if="data?.total > 0">
+    <template v-if="data?.total > 0 || pending">
       <UContainer v-if="view === 'cards'">
         <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <UCard v-for="{
