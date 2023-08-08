@@ -228,7 +228,6 @@
       </UContainer>
       <UContainer v-if="view === 'list'">
         <UTable
-          v-show="!pending"
           :rows="tournaments"
           :columns="tableColumns"
           :ui='{
@@ -349,7 +348,7 @@
         </UTable>
         <template v-if="pending">
           <div class="flex flex-col gap-4">
-            <USkeleton v-for="n in 9" :key="n" class="w-full h-12" />
+            <USkeleton v-for="n in 10" :key="n" class="w-full h-12" />
           </div>
         </template>
       </UContainer>
