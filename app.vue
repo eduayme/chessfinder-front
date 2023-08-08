@@ -70,7 +70,7 @@
     <UContainer v-if="data?.total > 0" class="flex items-center justify-between w-full">
       <UBadge
         size="sm"
-        color="black"
+        color="gray"
         variant="solid"
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
@@ -126,7 +126,7 @@
                 v-if="formatDate(start) < new Date()"
                 size="xs"
                 color="sky"
-                variant="outline"
+                variant="subtle"
                 class="md:ml-2"
               >
                 {{ $t('in_progress') }}
@@ -175,7 +175,7 @@
             <div class="flex flex-wrap justify-start mt-4 gap-x-4 gap-y-2 group">
               <UButton
                 v-if="website"
-                color="gray"
+                color="white"
                 class="md:invisible md:group-hover:visible"
                 :to="website"
                 target="_blank"
@@ -185,7 +185,7 @@
               </UButton>
               <UButton
                 v-if="ranking"
-                color="gray"
+                color="white"
                 class="md:invisible md:group-hover:visible"
                 :to="ranking"
                 target="_blank"
@@ -195,7 +195,7 @@
               </UButton>
               <UButton
                 v-if="info"
-                color="gray"
+                color="white"
                 class="md:invisible md:group-hover:visible"
                 :to="info"
                 target="_blank"
@@ -243,7 +243,7 @@
               v-if="formatDate(row.start) < new Date()"
               size="xs"
               color="sky"
-              variant="outline"
+              variant="subtle"
               class="md:ml-2"
             >
               {{ $t('in_progress') }}
@@ -307,7 +307,7 @@
           <div class="flex flex-wrap justify-start invisible gap-x-4 gap-y-2 group-hover:visible">
             <UButton
               v-if="row.website"
-              color="gray"
+              color="white"
               :to="row.website"
               target="_blank"
               size="xs"
@@ -317,7 +317,7 @@
             </UButton>
             <UButton
               v-if="row.ranking"
-              color="gray"
+              color="white"
               :to="row.ranking"
               target="_blank"
               size="xs"
@@ -327,7 +327,7 @@
             </UButton>
             <UButton
               v-if="row.info"
-              color="gray"
+              color="white"
               :to="row.info"
               target="_blank"
               size="xs"
@@ -345,13 +345,27 @@
       </template>
     </UContainer>
     <UContainer v-if="view === 'map'">
-      <h3>Map</h3>
+      <div class="relative w-full h-[calc(100dvh-180px)] -mb-12">
+        <MapboxMap
+          map-id="map"
+          style="position: relative; width: 100%; height: 100%"
+          :options="{
+            style: mapTheme, // style URL
+            center: [-68.137343, 45.137451], // starting position
+            zoom: 5 // starting zoom
+          }"
+        >
+          <MapboxFullscreenControl position="top-right" />
+          <MapboxNavigationControl position="bottom-right" />
+        </MapboxMap>
+      </div>
     </UContainer>
   </UContainer>
 </template>
 
 <script setup>
 const runtimeConfig = useRuntimeConfig()
+const colorMode = useColorMode()
 const { t } = useI18n()
 const page = ref(1)
 const search = ref("")
@@ -379,6 +393,13 @@ const tableColumns = computed(() => {
   ] || []
 })
 
+const mapTheme = computed(() => {
+  if (colorMode.value === 'dark') {
+    return 'mapbox://styles/mapbox/dark-v11'
+  }
+  return 'mapbox://styles/mapbox/light-v11'
+})
+
 const getIcon = (name) => {
   if (name === "standard") {
     return "i-heroicons-puzzle-piece"
@@ -392,7 +413,7 @@ const getIcon = (name) => {
 
 onMounted(() => {
   onScroll();
-  refresh()
+  refresh();
 })
 
 const onScroll = () => {
@@ -537,3 +558,12 @@ useHead({
   }]
 })
 </script>
+
+<style>
+.mapboxgl-control-container {
+  display: none
+}
+canvas {
+  border-radius: 6px;
+}
+</style>

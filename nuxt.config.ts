@@ -10,8 +10,13 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxthq/ui",
-    "@nuxtjs/i18n"
+    "@nuxtjs/i18n",
+    "nuxt-mapbox"
   ],
+
+  mapbox: {
+    accessToken: process.env.MAPBOX_API_KEY
+  },
 
   ui: {
     icons: ["heroicons", "circle-flags"],
