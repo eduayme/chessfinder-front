@@ -96,7 +96,7 @@
         </UButton>
       </UButtonGroup>
     </UContainer>
-    <UContainer class="p-10 text-center" v-else>
+    <UContainer class="p-10 text-center" v-else-if="!pending">
       <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
       <h3>{{ $t('no_tournaments') }}</h3>
     </UContainer>
