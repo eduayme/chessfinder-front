@@ -82,16 +82,9 @@
           :variant="view === label ? 'outline' : 'link'"
           variant="outline"
           @click="view = label"
-          :disabled="label === 'map'"
         >
-          <UTooltip v-if="label === 'map'" :text="$t('feature_soon')" :popper="{ placement: 'top' }">
-            <UIcon :name="icon" class="text-base" />
-            {{ $t(label) }}
-          </UTooltip>
-          <template v-else>
-            <UIcon :name="icon" class="text-base" />
-            {{ $t(label) }}
-          </template>
+          <UIcon :name="icon" class="-mr-[2px] text-base" />
+          {{ $t(label) }}
         </UButton>
       </UButtonGroup>
     </UContainer>
