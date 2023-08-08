@@ -6,7 +6,6 @@
                 v-model="locale"
                 :options="locales"
                 option-attribute="name"
-                icon="i-heroicons-globe-alt"
                 @change="navigateTo(`/${locale}`)"
             />
             <UButton :icon="isDark ? 'i-heroicons-moon' : 'i-heroicons-sun'" color="gray" variant="ghost" aria-label="Theme"

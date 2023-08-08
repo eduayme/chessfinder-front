@@ -58,7 +58,7 @@
                   'name': $t(`regions.${region?.toLowerCase()}`),
                   'value': region
                 }
-              })
+              }).sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1)
             ]"
             option-attribute="name"
             :icon="getFlag(filterFederation)"
@@ -359,7 +359,7 @@ const getIcon = (name) => {
   } else if (name === "blitz") {
     return "i-heroicons-bolt"
   }
-  return ""
+  return "i-heroicons-clock"
 }
 
 onMounted(() => {
@@ -479,7 +479,7 @@ const getFlag = (country) => {
   if (countryCode === "TUR") return "i-circle-flags-tr";
   if (countryCode === "UKR") return "i-circle-flags-ua";
   if (countryCode === "ENG") return "i-circle-flags-gb";
-  return ""; // if code not found
+  return "i-heroicons-globe-alt"; // if code not found
 };
 
 const getCityLink = (cityStr) => {
