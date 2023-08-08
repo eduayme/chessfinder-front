@@ -236,7 +236,7 @@ export default defineI18nConfig(() => ({
                 alb: "Albània",
                 and: "Andorra",
                 arm: "Armènia",
-                aut: "Àustria",
+                aut: "Austria",
                 aze: "Azerbaidjan",
                 blr: "Bielorússia",
                 bel: "Bèlgica",
