@@ -54,4 +54,6 @@ export default defineNuxtConfig({
   },
 
   plugins: ['~/plugins/vercel.ts'],
+
+  ssr: false,
 });

@@ -6,7 +6,7 @@
         <UInput
           v-model="search"
           icon="i-heroicons-magnifying-glass-20-solid"
-          color="white" :trailing="false"
+          color="white"
           :placeholder="`${$t('search')}...`"
           :ui="{ icon: { trailing: { pointer: '' } } }"
           class="max-w-full"
@@ -24,6 +24,21 @@
         </UInput>
       </div>
       <div class="flex flex-wrap items-center mx-0 gap-x-6 gap-y-2">
+          <div class="flex flex-wrap items-center mx-0 gap-x-1 gap-y-2">
+            <UInput
+              v-model="startDate"
+              type="date"
+              color="white"
+              :max="endDate"
+            />
+            <span class="text-gray-400 dark:text-gray-500">-</span>
+            <UInput
+              v-model="endDate"
+              type="date"
+              color="white"
+              :min="startDate"
+            />
+          </div>
           <USelect
             v-model="filterControl"
             :options="[
@@ -357,7 +372,7 @@ const page = ref(1)
 const search = ref("")
 const displayPerPage = ref(15)
 const notStarted = ref(true)
-const minDate = ref(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)).toLocaleString().split(',')[0])
+const minDate = ref(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)))
 const filterControl = ref("")
 const filterFederation = ref("")
 const tournaments = ref([])
@@ -366,6 +381,8 @@ const views = ref([
   { label: 'list', icon: 'i-heroicons-queue-list' },
   { label: 'cards', icon: 'i-heroicons-squares-2x2' }
 ])
+const startDate = ref("")
+const endDate = ref("")
 
 const tableColumns = computed(() => {
   return [
@@ -398,7 +415,6 @@ const onScroll = () => {
   window.onscroll = () => {
     if (!pending.value) {
       let bottomOfWindow = Math.max(
-        window.pageYOffset,
         document.documentElement.scrollTop,
         document.body.scrollTop
       ) + window.innerHeight === document.documentElement.offsetHeight
@@ -410,15 +426,14 @@ const onScroll = () => {
   }
 }
 
-watch([search, filterControl, filterFederation], () => {
+watch([search, filterControl, filterFederation, startDate, endDate], () => {
   page.value = 1
   refresh()
 })
 
 watch(notStarted, (newValue) => {
   if (newValue) {
-    const tomorrow = new Date(new Date().getTime() + (24 * 60 * 60 * 1000)).toLocaleString().split(',')[0]
-    minDate.value = tomorrow
+    minDate.value = new Date(new Date().getTime() + (24 * 60 * 60 * 1000))
   } else {
     minDate.value = null
   }
@@ -432,22 +447,34 @@ const formatDate = (date) => {
   return dateObject
 }
 
-const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl}/tournaments`, {
-  lazy: true,
-  mode: 'cors',
-  headers: {
-    'Access-Control-Allow-Origin': '*'
-  },
-  method: 'POST',
-  body: {
-    page: page,
-    display_per_page: displayPerPage,
-    search: search,
-    min_date: minDate,
-    time_control_type: filterControl,
-    region: filterFederation
-  }
-})
+const { data, pending, refresh } = await useAsyncData(
+  'fetchTournaments',
+  () =>
+    $fetch(`${runtimeConfig.public.apiUrl}/tournaments`, {
+      lazy: true,
+      mode: 'cors',
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      method: 'POST',
+      body: {
+        page: page.value,
+        display_per_page: displayPerPage.value,
+        search: search.value,
+        min_date: startDate.value !== ''
+            ? new Date(startDate.value)?.toLocaleString()?.split(',')[0]
+              || minDate.value?.toLocaleString()?.split(',')[0]
+              || null
+            : minDate.value?.toLocaleString()?.split(',')[0] || null,
+        max_date:
+          endDate.value !== ''
+            ? new Date(endDate.value)?.toLocaleString()?.split(',')[0] || null
+            : null,
+        time_control_type: filterControl.value,
+        region: filterFederation.value
+      }
+    })
+);
 
 watch (data, (newValue) => {
   if (page.value === 1) {
