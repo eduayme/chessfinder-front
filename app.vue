@@ -30,6 +30,7 @@
               type="date"
               color="white"
               :max="endDate"
+              class="min-w-[140px]"
             />
             <span class="text-gray-400 dark:text-gray-500">-</span>
             <UInput
@@ -37,6 +38,7 @@
               type="date"
               color="white"
               :min="startDate"
+              class="min-w-[140px]"
             />
           </div>
           <USelect
