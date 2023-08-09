@@ -378,7 +378,7 @@ const filterFederation = ref("")
 const tournaments = ref([])
 const view = ref("cards")
 const views = ref([
-{ label: 'cards', icon: 'i-heroicons-squares-2x2' },
+  { label: 'cards', icon: 'i-heroicons-squares-2x2' },
   { label: 'list', icon: 'i-heroicons-queue-list' }
 ])
 const startDate = ref("")
@@ -407,7 +407,7 @@ const getIcon = (name) => {
 }
 
 onMounted(() => {
-  onScroll();
+  onScroll()
   refresh()
 })
 
@@ -443,7 +443,7 @@ watch(notStarted, (newValue) => {
 
 const formatDate = (date) => {
   var dateParts = date.split("/")
-  var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+  var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0])
   return dateObject
 }
 
@@ -474,7 +474,7 @@ const { data, pending, refresh } = await useAsyncData(
         region: filterFederation.value
       }
     })
-);
+)
 
 watch (data, (newValue) => {
   if (page.value === 1) {
@@ -485,59 +485,59 @@ watch (data, (newValue) => {
 
 const getFlag = (country) => {
   const countryCode = country.toUpperCase()
-  if (countryCode === "ALB") return "i-circle-flags-al";
-  if (countryCode === "AND") return "i-circle-flags-ad";
-  if (countryCode === "ARM") return "i-circle-flags-am";
-  if (countryCode === "AUT") return "i-circle-flags-at";
-  if (countryCode === "AZE") return "i-circle-flags-az";
-  if (countryCode === "BLR") return "i-circle-flags-by";
-  if (countryCode === "BEL") return "i-circle-flags-be";
-  if (countryCode === "BIH") return "i-circle-flags-ba";
-  if (countryCode === "BUL") return "i-circle-flags-bg";
-  if (countryCode === "CAT") return "i-circle-flags-es-ct";
-  if (countryCode === "CRO") return "i-circle-flags-hr";
-  if (countryCode === "CYP") return "i-circle-flags-cy";
-  if (countryCode === "CZE") return "i-circle-flags-cz";
-  if (countryCode === "DEN") return "i-circle-flags-dk";
-  if (countryCode === "EST") return "i-circle-flags-ee";
-  if (countryCode === "ESP") return "i-circle-flags-es";
-  if (countryCode === "FIN") return "i-circle-flags-fi";
-  if (countryCode === "FRA") return "i-circle-flags-fr";
-  if (countryCode === "GEO") return "i-circle-flags-ge";
-  if (countryCode === "GER") return "i-circle-flags-de";
-  if (countryCode === "GRE") return "i-circle-flags-gr";
-  if (countryCode === "HUN") return "i-circle-flags-hu";
-  if (countryCode === "ISL") return "i-circle-flags-is";
-  if (countryCode === "IRL") return "i-circle-flags-ie";
-  if (countryCode === "ITA") return "i-circle-flags-it";
-  if (countryCode === "KAZ") return "i-circle-flags-kz";
-  if (countryCode === "KOS") return "i-circle-flags-xk";
-  if (countryCode === "LAT") return "i-circle-flags-lv";
-  if (countryCode === "LIE") return "i-circle-flags-li";
-  if (countryCode === "LTU") return "i-circle-flags-lt";
-  if (countryCode === "LUX") return "i-circle-flags-lu";
-  if (countryCode === "MLT") return "i-circle-flags-mt";
-  if (countryCode === "MDA") return "i-circle-flags-md";
-  if (countryCode === "MNC") return "i-circle-flags-mc";
-  if (countryCode === "MNE") return "i-circle-flags-me";
-  if (countryCode === "NED") return "i-circle-flags-nl";
-  if (countryCode === "MKD") return "i-circle-flags-mk";
-  if (countryCode === "NOR") return "i-circle-flags-no";
-  if (countryCode === "POL") return "i-circle-flags-pl";
-  if (countryCode === "POR") return "i-circle-flags-pt";
-  if (countryCode === "ROU") return "i-circle-flags-ro";
-  if (countryCode === "RUS") return "i-circle-flags-ru";
-  if (countryCode === "SMR") return "i-circle-flags-sm";
-  if (countryCode === "SRB") return "i-circle-flags-rs";
-  if (countryCode === "SVK") return "i-circle-flags-sk";
-  if (countryCode === "SLO") return "i-circle-flags-si";
-  if (countryCode === "SWE") return "i-circle-flags-se";
-  if (countryCode === "SUI") return "i-circle-flags-ch";
-  if (countryCode === "TUR") return "i-circle-flags-tr";
-  if (countryCode === "UKR") return "i-circle-flags-ua";
-  if (countryCode === "ENG") return "i-circle-flags-gb";
-  return "i-heroicons-globe-alt"; // if code not found
-};
+  if (countryCode === "ALB") return "i-circle-flags-al"
+  if (countryCode === "AND") return "i-circle-flags-ad"
+  if (countryCode === "ARM") return "i-circle-flags-am"
+  if (countryCode === "AUT") return "i-circle-flags-at"
+  if (countryCode === "AZE") return "i-circle-flags-az"
+  if (countryCode === "BLR") return "i-circle-flags-by"
+  if (countryCode === "BEL") return "i-circle-flags-be"
+  if (countryCode === "BIH") return "i-circle-flags-ba"
+  if (countryCode === "BUL") return "i-circle-flags-bg"
+  if (countryCode === "CAT") return "i-circle-flags-es-ct"
+  if (countryCode === "CRO") return "i-circle-flags-hr"
+  if (countryCode === "CYP") return "i-circle-flags-cy"
+  if (countryCode === "CZE") return "i-circle-flags-cz"
+  if (countryCode === "DEN") return "i-circle-flags-dk"
+  if (countryCode === "EST") return "i-circle-flags-ee"
+  if (countryCode === "ESP") return "i-circle-flags-es"
+  if (countryCode === "FIN") return "i-circle-flags-fi"
+  if (countryCode === "FRA") return "i-circle-flags-fr"
+  if (countryCode === "GEO") return "i-circle-flags-ge"
+  if (countryCode === "GER") return "i-circle-flags-de"
+  if (countryCode === "GRE") return "i-circle-flags-gr"
+  if (countryCode === "HUN") return "i-circle-flags-hu"
+  if (countryCode === "ISL") return "i-circle-flags-is"
+  if (countryCode === "IRL") return "i-circle-flags-ie"
+  if (countryCode === "ITA") return "i-circle-flags-it"
+  if (countryCode === "KAZ") return "i-circle-flags-kz"
+  if (countryCode === "KOS") return "i-circle-flags-xk"
+  if (countryCode === "LAT") return "i-circle-flags-lv"
+  if (countryCode === "LIE") return "i-circle-flags-li"
+  if (countryCode === "LTU") return "i-circle-flags-lt"
+  if (countryCode === "LUX") return "i-circle-flags-lu"
+  if (countryCode === "MLT") return "i-circle-flags-mt"
+  if (countryCode === "MDA") return "i-circle-flags-md"
+  if (countryCode === "MNC") return "i-circle-flags-mc"
+  if (countryCode === "MNE") return "i-circle-flags-me"
+  if (countryCode === "NED") return "i-circle-flags-nl"
+  if (countryCode === "MKD") return "i-circle-flags-mk"
+  if (countryCode === "NOR") return "i-circle-flags-no"
+  if (countryCode === "POL") return "i-circle-flags-pl"
+  if (countryCode === "POR") return "i-circle-flags-pt"
+  if (countryCode === "ROU") return "i-circle-flags-ro"
+  if (countryCode === "RUS") return "i-circle-flags-ru"
+  if (countryCode === "SMR") return "i-circle-flags-sm"
+  if (countryCode === "SRB") return "i-circle-flags-rs"
+  if (countryCode === "SVK") return "i-circle-flags-sk"
+  if (countryCode === "SLO") return "i-circle-flags-si"
+  if (countryCode === "SWE") return "i-circle-flags-se"
+  if (countryCode === "SUI") return "i-circle-flags-ch"
+  if (countryCode === "TUR") return "i-circle-flags-tr"
+  if (countryCode === "UKR") return "i-circle-flags-ua"
+  if (countryCode === "ENG") return "i-circle-flags-gb"
+  return "i-heroicons-globe-alt" // if code not found
+}
 
 const getCityLink = (cityStr) => {
   const city = cityStr.toLowerCase()
