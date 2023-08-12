@@ -45,7 +45,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL,
       posthogPublicKey: process.env.POSTHOG_KEY,
-      posthogHost: process.env.POSTHOG_HOST
+      posthogHost: process.env.POSTHOG_HOST,
+      mapboxKey: process.env.MAPBOX_API_KEY
     },
   },
 
