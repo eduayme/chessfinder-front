@@ -99,7 +99,10 @@ export default defineI18nConfig(() => ({
             start: "Start",
             end: "End",
             time_control: "Time control",
-            city: "City"
+            city: "City",
+            address: "Address",
+            all_tournaments_loaded: "All tournaments on the map",
+            load_more_tournaments: "Display more tournaments"
         },
         es: {
             title: "Encuentra torneos por toda Europa",
@@ -196,7 +199,10 @@ export default defineI18nConfig(() => ({
             start: "Inicio",
             end: "Fin",
             time_control: "Ritmo de juego",
-            city: "Ciudad"
+            city: "Ciudad",
+            address: "Dirección",
+            all_tournaments_loaded: "Todos los torneos en el mapa",
+            load_more_tournaments: "Visualiza más torneos"
         },
         ca: {
             title: "Troba tots els tornejos a Europa",
@@ -293,7 +299,10 @@ export default defineI18nConfig(() => ({
             start: "Inici",
             end: "Fi",
             time_control: "Ritme de joc",
-            city: "Ciutat"
+            city: "Ciutat",
+            address: "Adreça",
+            all_tournaments_loaded: "Tots els tornejos al mapa",
+            load_more_tournaments: "Visualitza més tornejos"
         },
     },
     datetimeFormats: {

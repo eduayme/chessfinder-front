@@ -75,19 +75,35 @@
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
       </UBadge>
-      <UButtonGroup size="xs" class="hidden md:block">
+      <div class="hidden gap-4 md:flex">
         <UButton
-          v-for="{ label, icon } in views"
-          :key="label"
-          :color="view === label ? 'primary' : 'white'"
-          :variant="view === label ? 'outline' : 'link'"
+          v-if="view === 'map'"
+          :loading="pending"
+          color="white"
           variant="outline"
-          @click="view = label"
+          size="2xs"
+          @click="page++"
+          :disabled="data?.total === tournaments.length"
         >
-          <UIcon :name="icon" class="text-base" />
-          {{ $t(label) }}
+          {{
+            data?.total === tournaments.length
+            ? $t('all_tournaments_loaded')
+            : $t('load_more_tournaments')
+          }}
         </UButton>
-      </UButtonGroup>
+        <UButtonGroup size="xs">
+          <UButton
+            v-for="{ label, icon } in views"
+            :key="label"
+            :color="view === label ? 'primary' : 'white'"
+            :variant="view === label ? 'outline' : 'link'"
+            @click="view = label"
+          >
+            <UIcon :name="icon" class="text-base" />
+            {{ $t(label) }}
+          </UButton>
+        </UButtonGroup>
+      </div>
     </UContainer>
     <UContainer class="p-10 my-10 text-center" v-else-if="!pending">
       <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
@@ -101,7 +117,7 @@
             v-for="{
               name,
               fed,
-              city,
+              address,
               start,
               end,
               total_players,
@@ -121,9 +137,9 @@
                   </UTooltip>
                   <a
                     class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
-                    :href="getCityLink(city)" target="_blank"
+                    :href="getAddressLink(address)" target="_blank"
                   >
-                    {{ city.toLowerCase() || $t(`regions.${fed.toLowerCase()}`) }}
+                    {{ address.toLowerCase() || $t(`regions.${fed.toLowerCase()}`) }}
                   </a>
                 </div>
                 <UBadge
@@ -210,7 +226,7 @@
               </div>
           </UCard>
           <template v-if="pending">
-            <UCard v-for="n in 10" :key="n" class="h-54">
+            <UCard v-for="n in 9" :key="n" class="h-54">
               <div class="flex flex-col gap-2">
                 <USkeleton class="w-full h-6" />
                 <USkeleton class="h-5 w-[200px]" />
@@ -294,16 +310,16 @@
               </div>
             </div>
           </template>
-          <template #city-data="{ row }">
+          <template #address-data="{ row }">
             <div class="flex items-center gap-[6px]">
               <UTooltip :text="$t(`regions.${row.fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
                 <UIcon :name="getFlag(row.fed)" class="text-base mr-[1px]" />
               </UTooltip>
               <a
                 class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[28ch]"
-                :href="getCityLink(row.city)" target="_blank"
+                :href="getAddressLink(row.address)" target="_blank"
               >
-                {{ row.city.toLowerCase() || $t(`regions.${row.fed.toLowerCase()}`) }}
+                {{ row.address.toLowerCase() || $t(`regions.${row.fed.toLowerCase()}`) }}
               </a>
             </div>
           </template>
@@ -346,48 +362,105 @@
           </template>
         </UTable>
         <template v-if="pending">
-          <UCard v-for="n in 9" :key="n" class="h-54">
-            <div class="flex flex-col gap-2">
-              <USkeleton class="w-full h-6" />
-              <USkeleton class="h-5 w-[200px]" />
-              <USkeleton class="h-5 w-[280px]" />
-              <USkeleton class="h-5 w-[200px]" />
-              <USkeleton class="h-8 w-[120px] mt-2" />
-            </div>
-          </UCard>
+          <USkeleton v-for="n in 15" :key="n" class="w-full my-2 h-11" />
         </template>
       </UContainer>
       <UContainer v-show="view === 'map'">
-        <div class="relative w-full h-[calc(100dvh-180px)] -mb-12">
+        <USkeleton v-if="pending" class="relative w-full h-[calc(100dvh-180px)] -mb-12" />
+        <div v-else class="relative w-full h-[calc(100dvh-180px)] -mb-12">
           <MapboxMap
-            map-id="map"
-            style="position: relative; width: 100%; height: 100%"
-            :options="{
-              style: mapTheme, // style URL
-              center: [15, 50], // starting position
-              zoom: 3 // starting zoom
-            }"
+            :access-token="mapboxKey"
+            :map-style="mapTheme"
+            :center="mapCenter"
+            :zoom="2"
+            class="w-full h-full"
+            @mb-created="(mapInstance) => map = mapInstance"
           >
-            <MapboxGeolocateControl position="top-left" />
-            <MapboxFullscreenControl position="top-right" />
+            <MapboxGeolocateControl position="top-right" />
             <MapboxNavigationControl position="bottom-right" />
-            <MapboxDefaultMarker
-              v-for="n in 10"
-              :key="n"
-              :marker-id="`marker-${n}`"
-              :options="{}"
-              :lnglat="[20 + 1*n, 40]"
+            <MapboxMarker
+              v-for="(item, i) in items"
+              :key="i"
+              :lng-lat="[item?.lng || 0, item?.lat || 0]"
+              popup
             >
-              <MapboxDefaultPopup
-                :popup-id="`popup-${n}`"
-                :lnglat="[20 + 1*n, 40]"
-                :options="{
-                  closeOnClick: false
-                }"
-              >
-                {{ n }}
-              </MapboxDefaultPopup>
-            </MapboxDefaultMarker>
+              <template v-slot:popup>
+                <UCard class="group">
+                    <p class="text-base capitalize">{{ item?.name }}</p>
+                    <div class="flex flex-col items-start justify-start gap-2 md:items-end md:flex-row">
+                        <div class="flex items-center justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+                            <UTooltip :text="$t(`regions.${item?.fed.toLowerCase()}`)" :popper="{ placement: 'top' }">
+                                <UIcon :name="getFlag(item?.fed)" class="text-base mr-[1px]" />
+                            </UTooltip>
+                            <a class="text-sm capitalize text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[28ch]"
+                                :href="getAddressLink(item?.address)" target="_blank">
+                                {{ item?.address.toLowerCase() || $t(`regions.${item?.fed.toLowerCase()}`) }}
+                            </a>
+                        </div>
+                        <UBadge v-if="formatDate(item?.start) < new Date()" size="xs" color="sky" variant="outline" class="md:ml-2">
+                            {{ $t('in_progress') }}
+                        </UBadge>
+                    </div>
+                    <div class="flex justify-start gap-1 mt-2 text-gray-500 dark:text-gray-400">
+                        <UIcon name="i-heroicons-calendar" class="text-lg" />
+                        <div class="text-sm normal-case">
+                            <div class="inline-block first-letter:capitalize">
+                                {{ $d(formatDate(item?.start), 'short') }}
+                            </div>
+                            <span v-if="item?.start != item?.end"> - </span>
+                            <div v-if="item?.start != item?.end" class="inline-block first-letter:capitalize">
+                                {{ $d(formatDate(item?.end), 'short') }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-start gap-2 mt-2 text-gray-500 md:flex-row md:gap-4 dark:text-gray-400">
+                        <div v-if="item?.total_players > 0 || item?.time_control?.type"
+                            class="flex flex-row-reverse justify-end gap-4 md:justify-start md:flex-row">
+                            <div v-if="item?.total_players > 0" class="flex justify-start gap-1 text-sm">
+                                <UIcon name="i-heroicons-user-group" class="text-lg" />
+                                {{ item?.total_players }}
+                            </div>
+                            <div v-if="item?.time_control?.type" class="flex items-start justify-start gap-1 text-sm normal-case">
+                                <UIcon v-if="item?.time_control?.type === 'standard'" :name="getIcon('standard')" class="text-lg" />
+                                <UIcon v-if="item?.time_control?.type === 'rapid'" :name="getIcon('rapid')" class="text-lg" />
+                                <UIcon v-if="item?.time_control?.type === 'blitz'" :name="getIcon('blitz')" class="text-lg" />
+                                <div class="inline-block first-letter:capitalize">
+                                    {{ item?.time_control?.type }}
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="item?.time_control?.value" class="flex items-start justify-start gap-1 text-sm normal-case">
+                            <UIcon name="i-heroicons-clock" class="text-lg" />
+                            <span class="text-ellipsis overflow-hidden whitespace-nowrap max-w-[32ch] md:max-w-[24ch]">
+                                <template v-if="item?.time_control?.min > 0">
+                                    {{ `${item?.time_control?.min}m + ${item?.time_control?.sec}s` }}
+                                </template>
+                                <template v-else>
+                                    {{ item?.time_control?.value }}
+                                </template>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap justify-start mt-4 gap-x-4 gap-y-2 group">
+                        <UButton v-if="item?.website" color="gray" class="md:invisible md:group-hover:visible" :to="item?.website"
+                            target="_blank">
+                            <UIcon name="i-heroicons-link" class="text-lg" />
+                            {{ $t("website") }}
+                        </UButton>
+                        <UButton v-if="item?.ranking" color="gray" class="md:invisible md:group-hover:visible" :to="item?.ranking"
+                            target="_blank">
+                            <UIcon name="i-heroicons-user-group" class="text-lg" />
+                            {{ $t("ranking") }}
+                        </UButton>
+                        <UButton v-if="item?.info" color="gray" class="md:invisible md:group-hover:visible" :to="item?.info"
+                            target="_blank">
+                            <UIcon name="i-heroicons-information-circle" class="text-lg" />
+                            {{ $t("info") }}
+                        </UButton>
+                    </div>
+                </UCard>
+              </template>
+            </MapboxMarker>
           </MapboxMap>
         </div>
       </UContainer>
@@ -396,6 +469,19 @@
 </template>
 
 <script setup>
+// Import the component and its CSS
+import {
+  MapboxMap,
+  MapboxGeolocateControl,
+  MapboxNavigationControl,
+  MapboxMarker
+} from '@studiometa/vue-mapbox-gl';
+import '@studiometa/vue-mapbox-gl/index.css';
+
+// Import Mapbox required CSS stylesheets
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/lib/mapbox-gl-geocoder.css';
+
 const runtimeConfig = useRuntimeConfig()
 const colorMode = useColorMode()
 const { t } = useI18n()
@@ -407,12 +493,44 @@ const minDate = ref(null)
 const filterControl = ref("")
 const filterFederation = ref("")
 const tournaments = ref([])
-const view = ref("cards")
+const view = ref("map")
 const views = ref([
   { label: 'cards', icon: 'i-heroicons-squares-2x2' },
   { label: 'list', icon: 'i-heroicons-queue-list' },
   { label: 'map', icon: 'i-heroicons-map' }
 ])
+const map = ref(null)
+
+const items = computed(() => {
+  const itemsLatLng = tournaments.value
+    ?.filter((t) => t?.latitude !== "" && t?.longitude !== "")
+
+  itemsLatLng.forEach((item, index) => {
+      item.id = index;
+      item.lat = item?.latitude || 0,
+      item.lng = item?.longitude || 0
+  });
+
+  return itemsLatLng
+})
+
+const mapboxKey = computed(() => {
+  return runtimeConfig.public.mapboxKey
+})
+
+const mapCenter = computed(() => {
+  if (items.value.length === 0) {
+    return [0, 0]; // Default center
+  }
+
+  const sumLat = items.value.reduce((total, item) => total + item?.latitude, 0);
+  const sumLng = items.value.reduce((total, item) => total + item?.longitude, 0);
+
+  const avgLat = sumLat / items.value.length;
+  const avgLng = sumLng / items.value.length;
+
+  return [avgLng, avgLat];
+})
 
 const tableColumns = computed(() => {
   return [
@@ -420,7 +538,7 @@ const tableColumns = computed(() => {
     { key: 'start', label: t('start') },
     { key: 'end', label: t('end') },
     { key: 'time_control', label: t('time_control') },
-    { key: 'city', label: t('city') },
+    { key: 'address', label: t('address') },
     { key: 'actions' }
   ] || []
 })
@@ -452,7 +570,6 @@ const onScroll = () => {
   window.onscroll = () => {
     if (!pending.value) {
       let bottomOfWindow = Math.max(
-        window.pageYOffset,
         document.documentElement.scrollTop,
         document.body.scrollTop
       ) + window.innerHeight === document.documentElement.offsetHeight
@@ -464,9 +581,12 @@ const onScroll = () => {
   }
 }
 
+watch(page, () => {
+  refresh()
+})
+
 watch([search, filterControl, filterFederation], () => {
   page.value = 1
-  refresh()
 })
 
 watch(notStarted, (newValue) => {
@@ -477,7 +597,6 @@ watch(notStarted, (newValue) => {
     minDate.value = null
   }
   page.value = 1
-  refresh()
 })
 
 const formatDate = (date) => {
@@ -486,7 +605,7 @@ const formatDate = (date) => {
   return dateObject
 }
 
-const { data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl}/tournaments`, {
+const { data: data, pending, refresh } = await useFetch(`${runtimeConfig.public.apiUrl}/tournaments`, {
   lazy: true,
   mode: 'cors',
   headers: {
@@ -566,20 +685,20 @@ const getFlag = (country) => {
   return "i-heroicons-globe-alt"; // if code not found
 };
 
-const getCityLink = (cityStr) => {
-  const city = cityStr.toLowerCase()
+const getAddressLink = (addressStr) => {
+  const address = addressStr.toLowerCase()
   const URLcontain = ['http', '.c', '.d', '.e', '.o']
   const isUrl = URLcontain.some((str) => {
-    return city.includes(str)
+    return address.includes(str)
   })
   if (isUrl) {
-    if (!city.includes('http')) {
-      return 'http://' + city
+    if (!address.includes('http')) {
+      return 'http://' + address
     }
-    return city
+    return address
   }
   const url = 'https://www.google.com/maps/search/'
-  const link = url + city.split("/").join("")
+  const link = url + address.split("/").join("")
   return link
 }
 
@@ -596,16 +715,33 @@ useHead({
 canvas {
   border-radius: 6px;
 }
-.mapboxgl-popup-close-button {
-  top: 2px;
-  right: 2px;
-  height: 16px;
-  width: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.mapboxgl-canvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 .mapboxgl-popup-content {
-  padding: 20px;
+  background: white;
+  padding: 0;
+  width: 480px;
+}
+.mapboxgl-popup-tip {
+  border-top-color: white;
+  border-bottom-color: white;
+}
+
+.dark .mapboxgl-popup-content {
+  background: #18181B;
+}
+.dark .mapboxgl-popup-tip {
+  border-top-color: #18181B;
+  border-bottom-color: #18181B;
+}
+.mapboxgl-popup-close-button {
+  width: 24px;
+  height: 24px;
 }
 </style>

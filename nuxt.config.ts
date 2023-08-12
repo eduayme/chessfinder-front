@@ -10,13 +10,8 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxthq/ui",
-    "@nuxtjs/i18n",
-    "nuxt-mapbox"
+    "@nuxtjs/i18n"
   ],
-
-  mapbox: {
-    accessToken: process.env.MAPBOX_API_KEY
-  },
 
   ui: {
     icons: ["heroicons", "circle-flags"],
@@ -50,7 +45,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL,
       posthogPublicKey: process.env.POSTHOG_KEY,
-      posthogHost: process.env.POSTHOG_HOST
+      posthogHost: process.env.POSTHOG_HOST,
+      mapboxKey: process.env.MAPBOX_API_KEY
     },
   },
 
@@ -59,4 +55,6 @@ export default defineNuxtConfig({
   },
 
   plugins: ['~/plugins/vercel.ts'],
+
+  ssr: false
 });
