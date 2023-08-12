@@ -392,7 +392,7 @@
             :access-token="mapboxKey"
             :map-style="mapTheme"
             :center="mapCenter"
-            :zoom="2"
+            :zoom="filterFederation !== '' && items.length > 0 ? 5 : 2"
             class="w-full h-full"
             @mb-created="(mapInstance) => map = mapInstance"
           >
@@ -513,10 +513,11 @@ const minDate = ref(new Date(new Date().getTime() + (24 * 60 * 60 * 1000)))
 const filterControl = ref("")
 const filterFederation = ref("")
 const tournaments = ref([])
-const view = ref("map")
+const view = ref("cards")
 const views = ref([
   { label: 'cards', icon: 'i-heroicons-squares-2x2' },
-  { label: 'list', icon: 'i-heroicons-queue-list' }
+  { label: 'list', icon: 'i-heroicons-queue-list' },
+  { label: 'map', icon: 'i-heroicons-map' }
 ])
 const startDate = ref("")
 const endDate = ref("")
@@ -541,7 +542,7 @@ const mapboxKey = computed(() => {
 
 const mapCenter = computed(() => {
   if (items.value.length === 0) {
-    return [0, 0]; // Default center
+    return [5, 35]; // Default center of Europe
   }
 
   const sumLat = items.value.reduce((total, item) => total + item?.latitude, 0);
@@ -602,12 +603,13 @@ const onScroll = () => {
   }
 }
 
-watch(page, () => {
+watch([search, filterControl, filterFederation, startDate, endDate], () => {
+  page.value = 1
   refresh()
 })
 
-watch([search, filterControl, filterFederation], () => {
-  page.value = 1
+watch(page, () => {
+  refresh()
 })
 
 watch(notStarted, (newValue) => {
@@ -617,6 +619,7 @@ watch(notStarted, (newValue) => {
     minDate.value = null
   }
   page.value = 1
+  refresh()
 })
 
 const formatDate = (date) => {
