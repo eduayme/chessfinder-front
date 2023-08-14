@@ -529,8 +529,8 @@ const items = computed(() => {
 
   itemsLatLng.forEach((item, index) => {
       item.id = index;
-      item.lat = item?.latitude || 0,
-      item.lng = item?.longitude || 0
+      item.lat = parseFloat(item?.latitude) || 0,
+      item.lng = parseFloat(item?.longitude) || 0
   });
 
   return itemsLatLng
@@ -545,8 +545,14 @@ const mapCenter = computed(() => {
     return [5, 35]; // Default center of Europe
   }
 
-  const sumLat = items.value.reduce((total, item) => total + item?.latitude, 0);
-  const sumLng = items.value.reduce((total, item) => total + item?.longitude, 0);
+  const sumLat = items.value.reduce(
+    (total, item) => total + parseFloat(item?.latitude),
+    0
+  );
+  const sumLng = items.value.reduce(
+    (total, item) => total + parseFloat(item?.longitude),
+    0
+  );
 
   const avgLat = sumLat / items.value.length;
   const avgLng = sumLng / items.value.length;
