@@ -38,6 +38,10 @@ const locales = ref([
     {
         name: t('catalan'),
         value: 'ca'
+    },
+    {
+        name: t('french'),
+        value: 'fr'
     }
 ])
 </script>
