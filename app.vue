@@ -92,7 +92,7 @@
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
       </UBadge>
-      <div class="hidden gap-4 md:flex">
+      <div class="flex gap-4">
         <UButton
           v-if="view === 'map'"
           :loading="pending"
