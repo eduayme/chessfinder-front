@@ -84,43 +84,26 @@
       </div>
     </UContainer>
 
-    <UContainer v-if="data?.total > 0" class="flex items-center justify-between w-full">
+    <UContainer v-if="data?.total > 0" class="flex flex-wrap items-center justify-between w-full gap-4">
       <UBadge
         size="sm"
-        color="gray"
+        color="white"
         variant="solid"
       >
         {{ data?.total }} {{ $t('tournament', data?.total).toLowerCase() }}
       </UBadge>
-      <div class="flex gap-4">
+      <UButtonGroup size="xs">
         <UButton
-          v-if="view === 'map'"
-          :loading="pending"
-          color="white"
-          variant="outline"
-          size="2xs"
-          @click="page++"
-          :disabled="data?.total === tournaments.length"
+          v-for="{ label, icon } in views"
+          :key="label"
+          :color="view === label ? 'primary' : 'white'"
+          :variant="view === label ? 'outline' : 'link'"
+          @click="view = label"
         >
-          {{
-            data?.total === tournaments.length
-            ? $t('all_tournaments_loaded')
-            : $t('load_more_tournaments')
-          }}
+          <UIcon :name="icon" class="text-base" />
+          {{ $t(label) }}
         </UButton>
-        <UButtonGroup size="xs">
-          <UButton
-            v-for="{ label, icon } in views"
-            :key="label"
-            :color="view === label ? 'primary' : 'white'"
-            :variant="view === label ? 'outline' : 'link'"
-            @click="view = label"
-          >
-            <UIcon :name="icon" class="text-base" />
-            {{ $t(label) }}
-          </UButton>
-        </UButtonGroup>
-      </div>
+      </UButtonGroup>
     </UContainer>
     <UContainer class="p-10 my-10 text-center" v-else-if="!pending">
       <UIcon name="i-heroicons-circle-stack" class="text-4xl" />
@@ -398,6 +381,22 @@
           >
             <MapboxGeolocateControl position="top-right" />
             <MapboxNavigationControl position="bottom-right" />
+            <UButton
+              v-if="view === 'map'"
+              :loading="pending"
+              color="white"
+              variant="solid"
+              size="sm"
+              @click="page++"
+              :disabled="data?.total === tournaments.length"
+              class="absolute transform -translate-x-1/2 top-2 left-1/2"
+            >
+              {{
+                data?.total === tournaments.length
+                ? $t('all_tournaments_loaded')
+                : $t('load_more_tournaments')
+              }}
+            </UButton>
             <MapboxMarker
               v-for="(item, i) in items"
               :key="i"
